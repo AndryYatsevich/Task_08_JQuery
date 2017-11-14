@@ -7,6 +7,20 @@
  */
 
 $(document).ready(function () {
-    
-console.log(1);
+
+    console.log(1);
+});
+
+$(function () {
+
+    $("#productList ").on('click', '.btn-danger', function () {
+        $("#modalDelete").modal('show');
+        console.log('клик по кнопке удалить');
+    });
+
+    $("#productList ").on('click', '.btn-success', function () {
+        $("#modalAdd").modal('show');
+        console.log('клик по кнопке добавить');
+    });
+
 });

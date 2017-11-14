@@ -1,3 +1,4 @@
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
 @import 'components/vars';
 
 html {
@@ -14,5 +15,17 @@ body {
   min-width: 320px;
 }
 
+.modal-content {
+  margin-top: 50px;
+}
+
+.modal-delete {
+  display: none;
+}
+
+.modal-add{
+  margin-top: 150px;
+  width: 70%;
+}
 
 @import 'media/media';
