@@ -14,18 +14,61 @@ body {
   position: relative;
   min-width: 320px;
 }
-
-.modal-content {
-  margin-top: 50px;
-}
-
-.modal-delete {
+.overlay {
   display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0.5;
+  background-color: gray;
+  z-index: 1000;
+
+}
+.modal-window{
+  display: none;
+  position: fixed;
+  margin: 30px auto;
+  left: 0;
+  right: 0;
+  width: 40%;
+  background-color: white;
+  z-index: 1500;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5)
 }
 
-.modal-add{
-  margin-top: 150px;
-  width: 70%;
+.modal-window-header{
+  position: relative;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+.modal-window-content{
+  position: relative;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
 }
 
+.modal-window-footer{
+  position: relative;
+  padding: 20px;
+}
+
+.cities{
+  display: none;
+  padding: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5)
+}
+.cities .checkbox:first-child{
+  border-bottom: 1px solid #ddd;
+}
+
+.countries {
+  display: none;
+  padding: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5)
+}
 @import 'media/media';
