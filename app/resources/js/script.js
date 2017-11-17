@@ -12,23 +12,29 @@ $(document).ready(function () {
         {name: 'Товар 4', email: 'product1@mail.com', count: 5, price: '$12'},
         {name: 'Товар 55', email: 'product2@mail.com', count: 2, price: '$120'},
         {name: 'Товар 3', email: 'product3@mail.com', count: 7, price: '$73'}];
+    var $table = $('#productList');
+    var $tbody = $('tbody', $table);
+    var dataNumber;
+    var modal;
 
     function render(product) {
-        var table = $('#productList');
+        $tbody.empty();
         var tr;
 
         for (var i = 0; i < product.length; i++) {
-            tr = $('<tr></tr>')
+            tr = $('<tr></tr>');
             tr.append(
-                $('<td></td>').text(product[i].name),
+                $('<td></td>').text(product[i].name).append(
+                    $('<span></span>').addClass('badge pull-right').text(product[i].count)
+                ),
                 $('<td></td>').text(product[i].price),
                 $('<td></td>').append(
                     $('<button></button>').addClass('btn btn-success').text('Edit'),
                     $('<span> </span>'),
                     $('<button></button>').addClass('btn btn-danger').text('Delete')
                 )
-            );
-            table.append(tr);
+            ).attr('data-number', i);
+            $tbody.append(tr);
         }
 
     }
@@ -39,9 +45,18 @@ $(document).ready(function () {
     var $modalAdd = $("#modalAdd");
 
     $productList.on('click', '.btn-danger', function () {
+        if (modal) {
+            modal.css('display', 'none');
+            $('html').css('overflow-y', 'auto');
+        }
+        modal = $modalDelete;
+        var $this = $(this);
+
         $modalDelete.css('display', 'block');
         $overlay.css('display', 'block');
-        console.log('клик по кнопке удалить');
+        $('html').css('overflow-y', 'hidden');
+
+        dataNumber = $this.closest('tr').attr('data-number');
     });
 
     $modalDelete.on('click', '.btn-danger', function () {
@@ -52,16 +67,40 @@ $(document).ready(function () {
         console.log('клик по кнопке No');
     });
 
+    $modalDelete.on('click', '.btn-success', function () {
+        product.splice(dataNumber, 1);
+        console.log(product);
+        render(product);
+        $('html').css('overflow-y', 'auto');
+        $modalDelete.css('display', 'none');
+        $overlay.css('display', 'none');
+        console.log('клик по кнопке No');
+    });
+
     $("#addNew").on('click', function () {
-        $modalAdd.css('display', 'block');
+        if(modal){
+            modal.css('display', 'none');
+            $('html').css('overflow-y', 'auto');
+        }
+        modal = $modalAdd;
+
+        $('html').css('overflow-y', 'hidden');
+        modal.css('display', 'block');
         $overlay.css('display', 'block');
+
+
     });
 
     $productList.on('click', '.btn-success', function () {
+        if(modal){
+            modal.css('display', 'none');
+            $('html').css('overflow-y', 'auto');
+        }
+        modal = $modalAdd;
 
+        $('html').css('overflow-y', 'hidden');
         $modalAdd.css('display', 'block');
         $overlay.css('display', 'block');
-
 
         console.log('клик по кнопке добавить');
     });
@@ -69,6 +108,7 @@ $(document).ready(function () {
 
     $(document).on('click', function (e) {
         if (e.target.className === 'overlay') {
+            $('html').css('overflow-y', 'auto');
             $modalAdd.css('display', 'none');
             $modalDelete.css('display', 'none');
             $overlay.css('display', 'none');
@@ -77,8 +117,20 @@ $(document).ready(function () {
 
     var $sel = $('#delivery');
     $sel.on('click', function () {
+
         var val = $sel.val();
-        if (val === 'Страна') {
+        var $countries = $('#countries');
+        var $cities = $('#cities');
+
+        $countries
+            .toggleClass('hidden', val !== 'Страна')
+            .toggleClass('visible', val === 'Страна');
+
+        $cities
+            .toggleClass('hidden', val !== 'Город')
+            .toggleClass('visible', val === 'Город');
+
+        /*if (val === 'Страна') {
             $('#countries').css('display', 'block');
         } else {
             $('#countries').css('display', 'none');
@@ -87,7 +139,7 @@ $(document).ready(function () {
             $('#cities').css('display', 'block');
         } else {
             $('#cities').css('display', 'none');
-        }
+        }*/
         console.log(val);
     });
 
@@ -104,22 +156,10 @@ $(document).ready(function () {
         console.log(newProduct);
         product.push(newProduct);
         console.log(product);
-        var table = $('#productList');
-        var tr;
 
-        tr = $('<tr></tr>');
-        tr.append(
-            $('<td></td>').text($('#nameProduct').val()),
-            $('<td></td>').text($('#price').val()),
-            $('<td></td>').append(
-                $('<button></button>').addClass('btn btn-success').text('Edit'),
-                $('<span> </span>'),
-                $('<button></button>').addClass('btn btn-danger').text('Delete')
-            )
-        );
-        table.append(tr);
+        render(product);
 
-        $('#addProductForm')[0].reset();
+        //$('#addProductForm')[0].reset();
     }
 
     render(product);

@@ -63,12 +63,13 @@
                 <div class="col-xs-3">
                     <select class="form-control" size="1" name="delivery" id="delivery">
                         <option disabled>Куда доставить</option>
+                        <option>Пусто</option>
                         <option value="Страна">Страна</option>
                         <option value="Город">Город</option>
                     </select>
                 </div>
                 <div class="col-xs-3">
-                    <div class="cities" id="cities">
+                    <div class="cities hidden" id="cities">
                         <div class="checkbox">
                             <label><input type="checkbox" value="">Select All</label>
                         </div>
@@ -82,7 +83,7 @@
                             <label><input type="checkbox" value="Саратов">Саратов</label>
                         </div>
                     </div>
-                    <div class="countries" id="countries">
+                    <div class="countries hidden" id="countries">
                         <div class="radio">
                             <label><input type="radio" name="optradio">Россия</label>
                         </div>
