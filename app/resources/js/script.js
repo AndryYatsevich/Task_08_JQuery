@@ -82,8 +82,10 @@ $(document).ready(function () {
             modal.css('display', 'none');
             $('html').css('overflow-y', 'auto');
         }
+        $('#addProductForm')[0].reset();
         modal = $modalAdd;
-
+        $('.modal-window-header').text('Add new product.');
+        $('#btnAdd').text('Add');
         $('html').css('overflow-y', 'hidden');
         modal.css('display', 'block');
         $overlay.css('display', 'block');
@@ -97,12 +99,24 @@ $(document).ready(function () {
             $('html').css('overflow-y', 'auto');
         }
         modal = $modalAdd;
-
+        $('.modal-window-header').text('Edit product.');
+        $('#btnAdd').text('Update');
         $('html').css('overflow-y', 'hidden');
         $modalAdd.css('display', 'block');
         $overlay.css('display', 'block');
 
-        console.log('клик по кнопке добавить');
+        var $this = $(this);
+        dataNumber = $this.closest('tr').attr('data-number');
+        $('#nameProduct').val(product[dataNumber].name);
+        $('#email').val(product[dataNumber].email);
+        $('#count').val(product[dataNumber].count);
+        $('#price').val(product[dataNumber].price);
+        /*newProduct.name = $('#nameProduct').val();
+        newProduct.email = $('#email').val();
+        newProduct.count = $('#count').val();
+        newProduct.price = $('#price').val();*/
+
+        console.log('клик по кнопке добавить', product[dataNumber].name);
     });
 
 
@@ -159,7 +173,7 @@ $(document).ready(function () {
 
         render(product);
 
-        //$('#addProductForm')[0].reset();
+        $('#addProductForm')[0].reset();
     }
 
     render(product);
