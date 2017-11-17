@@ -5,6 +5,8 @@
 
     <title data-res="headTitle">kek</title>
     <link rel="icon" type="image/icon" href="favicon.ico">
+    <link href="resources/css/style.css" rel="stylesheet">
+    <link href="resources/css/bootstrap.css" rel="stylesheet">
     <!-- bower:css -->
     <!-- bower installed css files will go here... -->
     <!-- endinject -->
@@ -32,7 +34,7 @@
         Edit product
     </div>
     <div class="modal-window-content">
-        <form role="form">
+        <form role="form" id="addProductForm">
             <div class="form-group row">
                 <div class="col-xs-3">
                     <label for="nameProduct">Name:</label>
@@ -127,30 +129,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Товар 1</td>
-                    <td>12$</td>
-                    <td>
-                        <button class="btn btn-success">Edit</button>
-                        <button class="btn btn-danger">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Товар 2</td>
-                    <td>120$</td>
-                    <td>
-                        <button class="btn btn-success">Edit</button>
-                        <button class="btn btn-danger">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Товар 3</td>
-                    <td>56$</td>
-                    <td>
-                        <button class="btn btn-success">Edit</button>
-                        <button class="btn btn-danger">Delete</button>
-                    </td>
-                </tr>
+
                 </tbody>
             </table>
         </div>

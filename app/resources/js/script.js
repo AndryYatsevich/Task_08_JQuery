@@ -8,6 +8,31 @@
 
 $(document).ready(function () {
 
+    var product = [
+        {name: 'Товар 4', email: 'product1@mail.com', count: 5, price: '$12'},
+        {name: 'Товар 55', email: 'product2@mail.com', count: 2, price: '$120'},
+        {name: 'Товар 3', email: 'product3@mail.com', count: 7, price: '$73'}];
+
+    function render(product) {
+        var table = $('#productList');
+        var tr;
+
+        for (var i = 0; i < product.length; i++) {
+            tr = $('<tr></tr>')
+            tr.append(
+                $('<td></td>').text(product[i].name),
+                $('<td></td>').text(product[i].price),
+                $('<td></td>').append(
+                    $('<button></button>').addClass('btn btn-success').text('Edit'),
+                    $('<span> </span>'),
+                    $('<button></button>').addClass('btn btn-danger').text('Delete')
+                )
+            );
+            table.append(tr);
+        }
+
+    }
+
     var $productList = $("#productList");
     var $modalDelete = $("#modalDelete");
     var $overlay = $("#overlay");
@@ -25,7 +50,7 @@ $(document).ready(function () {
         $modalDelete.css('display', 'none');
         $overlay.css('display', 'none');
         console.log('клик по кнопке No');
-    })
+    });
 
     $("#addNew").on('click', function () {
         $modalAdd.css('display', 'block');
@@ -70,21 +95,32 @@ $(document).ready(function () {
     $btnAdd.click(addProduct);
 
     function addProduct() {
-        var $nameProduct = $('#nameProduct');
-        var $price = $('#price');
-        console.log($nameProduct.val());
-        var tr = $('<tr></tr>');
+        var newProduct = {};
+        newProduct.name = $('#nameProduct').val();
+        newProduct.email = $('#email').val();
+        newProduct.count = $('#count').val();
+        newProduct.price = $('#price').val();
+
+        console.log(newProduct);
+        product.push(newProduct);
+        console.log(product);
+        var table = $('#productList');
+        var tr;
+
+        tr = $('<tr></tr>');
         tr.append(
-            $('<td></td>').text($nameProduct.val()),
-            $('<td></td>').text($price.val()),
+            $('<td></td>').text($('#nameProduct').val()),
+            $('<td></td>').text($('#price').val()),
             $('<td></td>').append(
                 $('<button></button>').addClass('btn btn-success').text('Edit'),
                 $('<span> </span>'),
                 $('<button></button>').addClass('btn btn-danger').text('Delete')
             )
         );
+        table.append(tr);
 
-        $productList.append(tr);
-
+        $('#addProductForm')[0].reset();
     }
+
+    render(product);
 });
