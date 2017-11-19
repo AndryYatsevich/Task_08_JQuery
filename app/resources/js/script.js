@@ -2,20 +2,81 @@
 /**
  * @file script.js
  *
- * @author opa_oz
- * @date 27/07/2017
+ * @author AndryYatsevich
+ * @date 13/11/2017
  */
 
 $(document).ready(function () {
 
+    var validation = {
+        'productName': function () {
+            /*
+                        !$('#nameProduct').val().length ?
+                            $('#requaredNameProduct').removeClass('hidden').addClass('visible') :
+                            $('#requaredNameProduct').removeClass('visible').addClass('hidden');
+
+                        $('#nameProduct').val().length < 3 && $('#nameProduct').val().length ?
+                            $('#minRequaredNameProduct').removeClass('hidden').addClass('visible') :
+                            $('#minRequaredNameProduct').removeClass('visible').addClass('hidden');
+
+                        $('#nameProduct').val().length > 20 ?
+                            $('#maxRequaredNameProduct').removeClass('hidden').addClass('visible') :
+                            $('#maxRequaredNameProduct').removeClass('visible').addClass('hidden');
+                        $('#requaredNameProduct')
+                            .toggleClass('visible', !$('#nameProduct').val().length)
+                            .toggleClass('hidden', $('#nameProduct').val().length);
+
+                        $('#minRequaredNameProduct')
+                            .toggleClass('hidden', $('#nameProduct').val().length > 3 && !$('#nameProduct').val().length)
+                            .toggleClass('visible', $('#nameProduct').val().length < 3);
+
+
+                        $('#maxRequaredNameProduct')
+                            .toggleClass('visible', $('#nameProduct').val().length > 20)
+                            .toggleClass('hidden', $('#nameProduct').val().length < 20);
+            */
+            if (!$('#nameProduct').val().length) {
+                $('#requaredNameProduct').removeClass('hidden').addClass('visible');
+                console.log('валидация сработала');
+            } else {
+                $('#requaredNameProduct').removeClass('visible').addClass('hidden');
+            }
+
+            if ($('#nameProduct').val().length < 3 && $('#nameProduct').val().length) {
+                $('#minRequaredNameProduct').removeClass('hidden').addClass('visible');
+            } else {
+                $('#minRequaredNameProduct').removeClass('visible').addClass('hidden');
+            }
+
+            if ($('#nameProduct').val().length > 20) {
+                $('#maxRequaredNameProduct').removeClass('hidden').addClass('visible');
+            } else {
+                $('#maxRequaredNameProduct').removeClass('visible').addClass('hidden');
+            }
+
+            if($('#nameProduct').val().length < 3 || $('#nameProduct').val().length > 20){
+                $('#nameProduct').addClass('input-danger');
+                $('#nameProduct').removeClass('input-success');
+                $('#requaredNameProductSuccess').removeClass('visible').addClass('hidden');
+            } else {
+                $('#nameProduct').removeClass('input-danger');
+                $('#nameProduct').addClass('input-success');
+                $('#requaredNameProductSuccess').removeClass('hidden').addClass('visible');
+            }
+            console.log('валидация попыталась сработать');
+        }
+    };
+    $('#nameProduct').change(validation.productName);
     var product = [
-        {name: 'Товар 4', email: 'product1@mail.com', count: 5, price: '$12'},
-        {name: 'Товар 55', email: 'product2@mail.com', count: 2, price: '$120'},
-        {name: 'Товар 3', email: 'product3@mail.com', count: 7, price: '$73'}];
+        {name: 'Товар 4', email: 'product1@mail.com', count: 5, price: '12'},
+        {name: 'Товар 55', email: 'product2@mail.com', count: 2, price: '120'},
+        {name: 'Товар 3', email: 'product3@mail.com', count: 7, price: '73'}];
     var $table = $('#productList');
     var $tbody = $('tbody', $table);
     var dataNumber;
     var modal;
+    var $btnAdd;
+    var $btnUpd;
 
     function render(product) {
         $tbody.empty();
@@ -27,7 +88,7 @@ $(document).ready(function () {
                 $('<td></td>').text(product[i].name).append(
                     $('<span></span>').addClass('badge pull-right').text(product[i].count)
                 ),
-                $('<td></td>').text(product[i].price),
+                $('<td></td>').text('$ ' + product[i].price),
                 $('<td></td>').append(
                     $('<button></button>').addClass('btn btn-success').text('Edit'),
                     $('<span> </span>'),
@@ -78,14 +139,17 @@ $(document).ready(function () {
     });
 
     $("#addNew").on('click', function () {
-        if(modal){
+        if (modal) {
             modal.css('display', 'none');
             $('html').css('overflow-y', 'auto');
         }
         $('#addProductForm')[0].reset();
+
         modal = $modalAdd;
+        $('.modal-button').attr('data-id', 'btnAdd').text('Add');
         $('.modal-window-header').text('Add new product.');
-        $('#btnAdd').text('Add');
+
+
         $('html').css('overflow-y', 'hidden');
         modal.css('display', 'block');
         $overlay.css('display', 'block');
@@ -94,27 +158,27 @@ $(document).ready(function () {
     });
 
     $productList.on('click', '.btn-success', function () {
-        if(modal){
+        if (modal) {
             modal.css('display', 'none');
             $('html').css('overflow-y', 'auto');
         }
         modal = $modalAdd;
         $('.modal-window-header').text('Edit product.');
-        $('#btnAdd').text('Update');
+        var $this = $(this);
+
+        $('.modal-button').attr('data-id', 'btnUpd').text('Update');
+
         $('html').css('overflow-y', 'hidden');
         $modalAdd.css('display', 'block');
         $overlay.css('display', 'block');
 
-        var $this = $(this);
+
         dataNumber = $this.closest('tr').attr('data-number');
         $('#nameProduct').val(product[dataNumber].name);
         $('#email').val(product[dataNumber].email);
         $('#count').val(product[dataNumber].count);
         $('#price').val(product[dataNumber].price);
-        /*newProduct.name = $('#nameProduct').val();
-        newProduct.email = $('#email').val();
-        newProduct.count = $('#count').val();
-        newProduct.price = $('#price').val();*/
+
 
         console.log('клик по кнопке добавить', product[dataNumber].name);
     });
@@ -157,8 +221,23 @@ $(document).ready(function () {
         console.log(val);
     });
 
-    var $btnAdd = $('#btnAdd');
-    $btnAdd.click(addProduct);
+    var $btnModal = $('#btnModal');
+
+    $btnModal.click(function () {
+        if ($btnModal.attr('data-id') == 'btnAdd') {
+            console.log('takoe');
+            return addProduct();
+
+        }
+        if ($btnModal.attr('data-id') == 'btnUpd') {
+            console.log('takoe2');
+            return updProduct();
+        }
+    });
+    //$btnUpd = $('#btnUpd');
+    //console.log($btnUpd);
+
+    //$btnUpd.click(updProduct);
 
     function addProduct() {
         var newProduct = {};
@@ -168,12 +247,29 @@ $(document).ready(function () {
         newProduct.price = $('#price').val();
 
         console.log(newProduct);
+
         product.push(newProduct);
         console.log(product);
-
+        $('html').css('overflow-y', 'auto');
+        $modalAdd.css('display', 'none');
+        $overlay.css('display', 'none');
         render(product);
 
         $('#addProductForm')[0].reset();
+        console.log('addProduct', $btnAdd)
+    }
+
+    function updProduct() {
+        product[dataNumber].name = $('#nameProduct').val();
+        product[dataNumber].email = $('#email').val();
+        product[dataNumber].count = $('#count').val();
+        product[dataNumber].price = $('#price').val();
+
+        render(product);
+        $('html').css('overflow-y', 'auto');
+        $modalAdd.css('display', 'none');
+        $overlay.css('display', 'none');
+        console.log('updProduct сработала', $btnUpd);
     }
 
     render(product);

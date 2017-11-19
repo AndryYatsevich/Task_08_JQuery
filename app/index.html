@@ -3,10 +3,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <title data-res="headTitle">kek</title>
+    <title data-res="headTitle">08_Task_Table</title>
     <link rel="icon" type="image/icon" href="favicon.ico">
-    <link href="resources/css/style.css" rel="stylesheet">
+
     <link href="resources/css/bootstrap.css" rel="stylesheet">
+    <link href="resources/css/style.css" rel="stylesheet">
     <!-- bower:css -->
     <!-- bower installed css files will go here... -->
     <!-- endinject -->
@@ -39,6 +40,12 @@
                 <div class="col-xs-3">
                     <label for="nameProduct">Name:</label>
                     <input type="text" class="form-control" id="nameProduct" placeholder="Name">
+                </div>
+                <div class="col-xs-6">
+                    <div class="hidden requared" id="minRequaredNameProduct">Минимальное количество символов: 3</div>
+                    <div class="hidden requared" id="maxRequaredNameProduct">Максимальное количество символов: 20</div>
+                    <div class="hidden requared" id="requaredNameProduct">Поле обязательно для заполнения</div>
+                    <div class="hidden requared-success" id="requaredNameProductSuccess">Поле заполненно корректно</div>
                 </div>
             </div>
             <div class="form-group row">
@@ -99,7 +106,7 @@
         </form>
     </div>
     <div class="modal-window-footer">
-        <button class="btn btn-success" id="btnAdd"></button>
+        <button class="btn btn-success modal-button" id="btnModal"></button>
     </div>
 </div>
 
