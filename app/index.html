@@ -39,13 +39,11 @@
             <div class="form-group row">
                 <div class="col-xs-3">
                     <label for="nameProduct">Name:</label>
-                    <input type="text" class="form-control" id="nameProduct" placeholder="Name">
+                    <input type="text" class="form-control" id="nameProduct" placeholder="Name" data-correct="false">
                 </div>
                 <div class="col-xs-6">
-                    <div class="hidden requared" id="minRequaredNameProduct">Минимальное количество символов: 3</div>
-                    <div class="hidden requared" id="maxRequaredNameProduct">Максимальное количество символов: 20</div>
-                    <div class="hidden requared" id="requaredNameProduct">Поле обязательно для заполнения</div>
-                    <div class="hidden requared-success" id="requaredNameProductSuccess">Поле заполненно корректно</div>
+                    <div class="hidden requared" id="requaredNameProduct"></div>
+
                 </div>
             </div>
             <div class="form-group row">
@@ -57,7 +55,11 @@
             <div class="form-group row">
                 <div class="col-xs-2">
                     <label for="count">Count:</label>
-                    <input type="text" class="form-control" id="count" placeholder="Count">
+                    <input type="text" class="form-control" id="count" placeholder="Count" data-correct="false">
+                </div>
+                <div class="col-xs-6">
+                    <div class="hidden requared" id="requaredCount"></div>
+
                 </div>
             </div>
             <div class="form-group row">
@@ -106,7 +108,7 @@
         </form>
     </div>
     <div class="modal-window-footer">
-        <button class="btn btn-success modal-button" id="btnModal"></button>
+        <button class="btn btn-success modal-button disabled" id="btnModal"></button>
     </div>
 </div>
 
