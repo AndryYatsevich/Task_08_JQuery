@@ -108,7 +108,7 @@ $(document).ready(function () {
         'email': function () {
             var valEmail = /^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/i;
 
-            if(!$email.val()){
+            if (!$email.val()) {
                 $email
                     .removeClass('input-success')
                     .addClass('input-danger')
@@ -117,7 +117,7 @@ $(document).ready(function () {
                     .text('Поле обязательно для заполнения')
                     .removeClass('hidden requared-success')
                     .addClass('visible requared');
-            } else if(!valEmail.test($email.val())){
+            } else if (!valEmail.test($email.val())) {
                 $email
                     .removeClass('input-success')
                     .addClass('input-danger')
@@ -307,7 +307,7 @@ $(document).ready(function () {
         $('.modal-window-header').text('Edit product.');
         var $this = $(this);
 
-$btnModal.removeClass('disabled');
+        $btnModal.removeClass('disabled');
 
         $('.modal-button').attr('data-id', 'btnUpd').text('Update');
 
@@ -403,24 +403,54 @@ $btnModal.removeClass('disabled');
         }*/
         console.log(val);
     });
-var $checkAll = $('#checkAll');
-$checkAll.on('click', function () {
-    $('#checkMsk').attr('checked', 'checked');
-    $('#checkSar').attr('checked', 'checked');
-})
+    var $checkAll = $('#checkAll');
+
+    /*  $checkAll.click(function () {
+          if (!$checkAll.is(":checked"))
+              $("input[type=checkbox]").prop('checked', true);
+          else
+              $("input[type=checkbox]").prop('checked', false);
+      });*/
+
+    $checkAll.click(selectAll);
+    var checkedAll = [false, false, false];
+    $('#checkHab').click(checked);
+    $('#checkSar').click(checked);
+    $('#checkMsk').click(checked);
+
+    function checked() {
+
+        checkedAll[$(this).attr('data-check')] = !!$(this).is(":checked");
+
+        var takoe = true;
+        for (var j = 0; j < checkedAll.length; j++) {
+            if (!checkedAll[j]) {
+                console.log(checkedAll, checkedAll[j]);
+                takoe = false;
+            }
+        }
+
+        $checkAll.prop("checked", takoe);
+    }
+
+    function selectAll() {
+        $("input[type=checkbox]").each(function () {
+            $(this).prop("checked", $checkAll.prop("checked"));
+        });
+    }
 
     $btnModal.click(function () {
-        if ($btnModal.attr('data-id') == 'btnAdd') {
+        if ($btnModal.attr('data-id') === 'btnAdd') {
             return addProduct();
 
         }
-        if ($btnModal.attr('data-id') == 'btnUpd') {
+        if ($btnModal.attr('data-id') === 'btnUpd') {
             return updProduct();
         }
     });
 
     function addProduct() {
-        if ($nameProduct.attr('data-correct') == 'true' && $count.attr('data-correct') == 'true' && $price.attr('data-correct') == 'true' && $email.attr('data-correct') == 'true') {
+        if ($nameProduct.attr('data-correct') === 'true' && $count.attr('data-correct') === 'true' && $price.attr('data-correct') === 'true' && $email.attr('data-correct') === 'true') {
 
             var newProduct = {};
             newProduct.name = $('#nameProduct').val();

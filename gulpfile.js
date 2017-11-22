@@ -154,7 +154,7 @@ function injectDep() {
 
 function makeJs() {
     return gulp.src(jsPattern)
-        .pipe(uglify())
+      //  .pipe(uglify())
         .pipe(gulp.dest(destination + 'resources/js'));
 }
 
