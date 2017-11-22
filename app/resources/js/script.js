@@ -9,9 +9,9 @@
 $(document).ready(function () {
 
     var product = [
-        {name: 'Товар 4', email: 'product1@mail.com', count: 5, price: 12321232123.2},
-        {name: 'Товар 55', email: 'product2@mail.com', count: 2, price: 1202223.2334341},
-        {name: 'Товар 3', email: 'product3@mail.com', count: 7, price: 73000000.4343}];
+        {name: 'Товар 4', email: 'product1@mail.com', count: 5, price: 12321232123.2, delivery: 'Пусто'},
+        {name: 'Товар 55', email: 'product2@mail.com', count: 2, price: 1202223.2334341, delivery: 'Страна'},
+        {name: 'Товар 3', email: 'product3@mail.com', count: 7, price: 73000000.4343, delivery: 'Город'}];
     var $table = $('#productList');
     var $tbody = $('tbody', $table);
     var dataNumber;
@@ -27,7 +27,8 @@ $(document).ready(function () {
     var $btnModal = $('#btnModal');
     var $email = $('#email');
     var $requaredEmail = $('#requaredEmail');
-
+    var $countries = $('#countries');
+    var $cities = $('#cities');
     var validation = {
         'productName': function () {
             /*
@@ -279,7 +280,7 @@ $(document).ready(function () {
         console.log('клик по кнопке No');
     });
 
-    $("#addNew").on('click', function () {
+    $("#addNew").on('click', function () {          //модалка Add
         if (modal) {
             modal.css('display', 'none');
             $('html').css('overflow-y', 'auto');
@@ -298,7 +299,7 @@ $(document).ready(function () {
 
     });
 
-    $productList.on('click', '.btn-success', function () {
+    $productList.on('click', '.btn-success', function () { //модалка update
         if (modal) {
             modal.css('display', 'none');
             $('html').css('overflow-y', 'auto');
@@ -320,6 +321,20 @@ $(document).ready(function () {
         $('#email').val(product[dataNumber].email);
         $('#count').val(product[dataNumber].count);
         $('#price').val(product[dataNumber].price);
+
+        var val = product[dataNumber].delivery;
+        console.log(product[dataNumber].delivery);
+        $sel.val(val);
+        if(val === 'Страна' ){
+            $countries.removeClass('hidden').addClass('visible');
+
+        } else if (val === 'Пусто' ){
+            $cities.removeClass('visible').addClass('hidden');
+            $countries.removeClass('visible').addClass('hidden');
+        } else {
+            $cities.removeClass('hidden').addClass('visible');
+            
+        }
         if ($count.val() && $nameProduct.val() && $price.val() && $email.val()) {
             $count
                 .removeClass('input-danger')
@@ -373,6 +388,8 @@ $(document).ready(function () {
             $requaredPrice.removeClass('visible').addClass('hidden');
             $email.removeClass('input-success input-danger');
             $requaredEmail.removeClass('visible').addClass('hidden');
+            $countries.removeClass('visible').addClass('hidden');
+            $cities.removeClass('visible').addClass('hidden');
         }
     });
 
@@ -380,8 +397,7 @@ $(document).ready(function () {
     $sel.on('click', function () {
 
         var val = $sel.val();
-        var $countries = $('#countries');
-        var $cities = $('#cities');
+
 
         $countries
             .toggleClass('hidden', val !== 'Страна')
@@ -413,31 +429,40 @@ $(document).ready(function () {
       });*/
 
     $checkAll.click(selectAll);
-    var checkedAll = [false, false, false];
-    $('#checkHab').click(checked);
-    $('#checkSar').click(checked);
-    $('#checkMsk').click(checked);
+    var checkedAllCheckbox = [false, false, false];
+    $('#checkHab').click(checkedCheckbox);
+    $('#checkSar').click(checkedCheckbox);
+    $('#checkMsk').click(checkedCheckbox);
 
-    function checked() {
+    function checkedCheckbox() {
 
-        checkedAll[$(this).attr('data-check')] = !!$(this).is(":checked");
+        checkedAllCheckbox[$(this).attr('data-check')] = !!$(this).is(":checked");
 
         var takoe = true;
-        for (var j = 0; j < checkedAll.length; j++) {
-            if (!checkedAll[j]) {
-                console.log(checkedAll, checkedAll[j]);
+        for (var j = 0; j < checkedAllCheckbox.length; j++) {
+            if (!checkedAllCheckbox[j]) {
+                console.log(checkedAllCheckbox, checkedAllCheckbox[j]);
                 takoe = false;
             }
         }
 
         $checkAll.prop("checked", takoe);
+        return checkedAllCheckbox;
     }
 
     function selectAll() {
         $("input[type=checkbox]").each(function () {
             $(this).prop("checked", $checkAll.prop("checked"));
         });
+        return checkedAllCheckbox = [true, true, true];
     }
+
+    $("input[type=radio]").click(checkedRadio);
+    var selectedRadio;
+    function checkedRadio() {
+        selectedRadio = $(this).attr('data-radio');
+        console.log(selectedRadio);
+        }
 
     $btnModal.click(function () {
         if ($btnModal.attr('data-id') === 'btnAdd') {
@@ -457,7 +482,12 @@ $(document).ready(function () {
             newProduct.email = $('#email').val();
             newProduct.count = parseInt($('#count').val());
             newProduct.price = parseInt($('#price').val());
-
+            newProduct.delivery = $sel.val();
+            if($sel.val() === 'Страна'){
+                newProduct.countries = selectedRadio;
+            } else {
+                newProduct.cities = checkedAllCheckbox;
+            }
             console.log(newProduct);
 
             product.push(newProduct);
@@ -471,9 +501,13 @@ $(document).ready(function () {
             $requaredCount.removeClass('visible').addClass('hidden');
             $requaredPrice.removeClass('visible').addClass('hidden');
             $requaredEmail.removeClass('visible').addClass('hidden');
+            $countries.removeClass('visible').addClass('hidden');
+            $cities.removeClass('visible').addClass('hidden');
             $btnModal.addClass('disabled');
             $modalAdd.css('display', 'none');
             $overlay.css('display', 'none');
+
+
             render(product);
 
             $('#addProductForm')[0].reset();
@@ -490,6 +524,7 @@ $(document).ready(function () {
             product[dataNumber].email = $('#email').val();
             product[dataNumber].count = $('#count').val();
             product[dataNumber].price = $('#price').val();
+            product[dataNumber].delivery = $sel.val();
 
             $nameProduct.removeClass('input-success input-danger').attr('data-correct', 'false');
             $count.removeClass('input-success input-danger').attr('data-correct', 'false');
@@ -499,6 +534,8 @@ $(document).ready(function () {
             $requaredCount.removeClass('visible').addClass('hidden');
             $requaredPrice.removeClass('visible').addClass('hidden');
             $requaredEmail.removeClass('visible').addClass('hidden');
+            $countries.removeClass('visible').addClass('hidden');
+            $cities.removeClass('visible').addClass('hidden');
             render(product);
             $('html').css('overflow-y', 'auto');
             $nameProduct.removeClass('input-success input-danger');
