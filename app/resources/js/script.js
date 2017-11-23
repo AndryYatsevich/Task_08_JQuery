@@ -10,8 +10,22 @@ $(document).ready(function () {
 
     var product = [
         {name: 'Товар 4', email: 'product1@mail.com', count: 5, price: 12321232123.2, delivery: 'Пусто'},
-        {name: 'Товар 55', email: 'product2@mail.com', count: 2, price: 1202223.2334341, delivery: 'Страна'},
-        {name: 'Товар 3', email: 'product3@mail.com', count: 7, price: 73000000.4343, delivery: 'Город'}];
+        {
+            name: 'Товар 55',
+            email: 'product2@mail.com',
+            count: 2,
+            price: 1202223.2334341,
+            delivery: 'Страна',
+            countries: 1
+        },
+        {
+            name: 'Товар 3',
+            email: 'product3@mail.com',
+            count: 7,
+            price: 73000000.4343,
+            delivery: 'Город',
+            checkedAllCheckbox: [true, true, true]
+        }];
     var $table = $('#productList');
     var $tbody = $('tbody', $table);
     var dataNumber;
@@ -321,19 +335,26 @@ $(document).ready(function () {
         $('#email').val(product[dataNumber].email);
         $('#count').val(product[dataNumber].count);
         $('#price').val(product[dataNumber].price);
-
         var val = product[dataNumber].delivery;
-        console.log(product[dataNumber].delivery);
         $sel.val(val);
-        if(val === 'Страна' ){
+        if (val === 'Страна') {
             $countries.removeClass('hidden').addClass('visible');
-
-        } else if (val === 'Пусто' ){
+            console.log(product[dataNumber].countries);
+            $('[data-radio=' + product[dataNumber].countries + ']').prop("checked", true);
+        } else if (val === 'Пусто') {
             $cities.removeClass('visible').addClass('hidden');
             $countries.removeClass('visible').addClass('hidden');
         } else {
             $cities.removeClass('hidden').addClass('visible');
-            
+            var checkAll = true;
+            for (var j = 0; j < product[dataNumber].checkedAllCheckbox.length; j++) {
+                if (!product[dataNumber].checkedAllCheckbox[j]) {
+                    checkAll = false;
+
+                }
+                $('[data-check=' + j + ']').prop("checked", product[dataNumber].checkedAllCheckbox[j]);
+                $checkAll.prop("checked", checkAll);
+            }
         }
         if ($count.val() && $nameProduct.val() && $price.val() && $email.val()) {
             $count
@@ -435,19 +456,18 @@ $(document).ready(function () {
     $('#checkMsk').click(checkedCheckbox);
 
     function checkedCheckbox() {
-
         checkedAllCheckbox[$(this).attr('data-check')] = !!$(this).is(":checked");
 
-        var takoe = true;
+        var checkAll = true;
         for (var j = 0; j < checkedAllCheckbox.length; j++) {
             if (!checkedAllCheckbox[j]) {
                 console.log(checkedAllCheckbox, checkedAllCheckbox[j]);
-                takoe = false;
+                checkAll = false;
             }
         }
 
-        $checkAll.prop("checked", takoe);
-        return checkedAllCheckbox;
+        $checkAll.prop("checked", checkAll);
+        //return checkedAllCheckbox;
     }
 
     function selectAll() {
@@ -459,10 +479,10 @@ $(document).ready(function () {
 
     $("input[type=radio]").click(checkedRadio);
     var selectedRadio;
+
     function checkedRadio() {
-        selectedRadio = $(this).attr('data-radio');
-        console.log(selectedRadio);
-        }
+        return selectedRadio = $(this).attr('data-radio');
+    }
 
     $btnModal.click(function () {
         if ($btnModal.attr('data-id') === 'btnAdd') {
@@ -474,6 +494,79 @@ $(document).ready(function () {
         }
     });
 
+    $('#sortName').click(sortName);
+
+    function sortName() {
+        console.log('сортировка почти сработала', $('#sortNameDown').attr('data-sort') == 'off');
+        if ($('#sortNameDown').attr('data-sort') == 'off') {
+            $('#sortNameDown').removeClass('hidden').addClass('visible');
+            $('#sortNameUp').addClass('hidden').removeClass('visible');
+            $('#sortNameDown').attr('data-sort', 'on');
+            $('#sortNameUp').attr('data-sort', 'off');
+            product.sort(sortNameDown('name'));
+        } else {
+            $('#sortNameUp').removeClass('hidden').addClass('visible');
+            $('#sortNameDown').addClass('hidden').removeClass('visible');
+            $('#sortNameUp').attr('data-sort', 'on');
+            $('#sortNameDown').attr('data-sort', 'off');
+            product.sort(sortNameUp('name'));
+        }
+        render(product);
+    }
+
+    $('#sortPrice').click(sortPrice);
+
+    function sortPrice() {
+        console.log('сортировка почти сработала', $('#sortPriceDown').attr('data-sort') == 'off');
+        if ($('#sortPriceDown').attr('data-sort') == 'off') {
+            $('#sortPriceDown').removeClass('hidden').addClass('visible');
+            $('#sortPriceUp').addClass('hidden').removeClass('visible');
+            $('#sortPriceDown').attr('data-sort', 'on');
+            $('#sortPriceUp').attr('data-sort', 'off');
+            product.sort(sortPriceDown('price'));
+        } else {
+            $('#sortPriceUp').removeClass('hidden').addClass('visible');
+            $('#sortPriceDown').addClass('hidden').removeClass('visible');
+            $('#sortPriceUp').attr('data-sort', 'on');
+            $('#sortPriceDown').attr('data-sort', 'off');
+            product.sort(sortPriceUp('price'));
+        }
+
+      //  product.sort(sortFn('price'));
+
+
+
+        render(product);
+    }
+
+    function sortPriceUp(prop) {
+        return function (a, b) {
+            return b[prop] - a[prop];
+        }
+    }
+
+    function sortPriceDown(prop) {
+        return function (a, b) {
+            return a[prop] - b[prop] ;
+        }
+    }
+
+    function sortNameUp(prop) {
+        return function (a, b) {
+            var c = b[prop];
+            var d = a[prop];
+            console.log('сработала', b[prop]);
+            return c > d;
+        }
+    }
+    function sortNameDown(prop) {
+        return function (a, b) {
+            var c = b[prop];
+            var d = a[prop];
+            console.log('сработала', b[prop]);
+            return c < d;
+        }
+    }
     function addProduct() {
         if ($nameProduct.attr('data-correct') === 'true' && $count.attr('data-correct') === 'true' && $price.attr('data-correct') === 'true' && $email.attr('data-correct') === 'true') {
 
@@ -483,11 +576,12 @@ $(document).ready(function () {
             newProduct.count = parseInt($('#count').val());
             newProduct.price = parseInt($('#price').val());
             newProduct.delivery = $sel.val();
-            if($sel.val() === 'Страна'){
+            if ($sel.val() === 'Страна') {
                 newProduct.countries = selectedRadio;
             } else {
-                newProduct.cities = checkedAllCheckbox;
+                newProduct.checkedAllCheckbox = [].concat(checkedAllCheckbox);
             }
+            checkedAllCheckbox = [false, false, false];
             console.log(newProduct);
 
             product.push(newProduct);
@@ -525,7 +619,12 @@ $(document).ready(function () {
             product[dataNumber].count = $('#count').val();
             product[dataNumber].price = $('#price').val();
             product[dataNumber].delivery = $sel.val();
-
+            if ($sel.val() === 'Страна') {
+                product[dataNumber].countries = selectedRadio;
+            } else {
+                product[dataNumber].checkedAllCheckbox = [].concat(checkedAllCheckbox);
+            }
+            checkedAllCheckbox = [false, false, false];
             $nameProduct.removeClass('input-success input-danger').attr('data-correct', 'false');
             $count.removeClass('input-success input-danger').attr('data-correct', 'false');
             $price.removeClass('input-success input-danger').attr('data-correct', 'false');
@@ -543,7 +642,7 @@ $(document).ready(function () {
 
             $modalAdd.css('display', 'none');
             $overlay.css('display', 'none');
-            console.log('updProduct сработала', $btnUpd);
+            console.log('updProduct сработала', product);
         } else {
             alert('Заполните корректно все обязательные поля');
         }
