@@ -26,6 +26,8 @@ $(document).ready(function () {
             delivery: 'Город',
             checkedAllCheckbox: [true, true, true]
         }];
+    var productSort = [].concat(product);
+    console.log(productSort, product);
     var $table = $('#productList');
     var $tbody = $('tbody', $table);
     var dataNumber;
@@ -494,49 +496,65 @@ $(document).ready(function () {
         }
     });
 
-    $('#sortName').click(sortName);
 
+    var $sortName = $('#sortName');
+    var $sortNameUp = $('#sortNameUp');
+    var $sortNameDown = $('#sortNameDown');
+
+    var $sortPrice = $('#sortPrice');
+    var $sortPriceUp = $('#sortPriceUp');
+    var $sortPriceDown = $('#sortPriceDown');
+    $sortName.click(sortName);
     function sortName() {
-        console.log('сортировка почти сработала', $('#sortNameDown').attr('data-sort') == 'off');
-        if ($('#sortNameDown').attr('data-sort') == 'off') {
-            $('#sortNameDown').removeClass('hidden').addClass('visible');
-            $('#sortNameUp').addClass('hidden').removeClass('visible');
-            $('#sortNameDown').attr('data-sort', 'on');
-            $('#sortNameUp').attr('data-sort', 'off');
-            product.sort(sortNameDown('name'));
-        } else {
-            $('#sortNameUp').removeClass('hidden').addClass('visible');
-            $('#sortNameDown').addClass('hidden').removeClass('visible');
-            $('#sortNameUp').attr('data-sort', 'on');
-            $('#sortNameDown').attr('data-sort', 'off');
-            product.sort(sortNameUp('name'));
+        $sortPriceDown.addClass('hidden').removeClass('visible');
+        $sortPriceUp.addClass('hidden').removeClass('visible');
+        $sortPrice.attr('data-sortStep', 'first');
+        if($sortName.attr('data-sortStep') === 'first'){
+            $sortName.attr('data-sortStep', 'second');
+            $sortNameUp.removeClass('hidden').addClass('visible');
+            $sortNameDown.addClass('hidden').removeClass('visible');
+            productSort = [].concat(product);
+            productSort.sort(sortNameUp('name'));
+        } else if($sortName.attr('data-sortStep') === 'second'){
+            $sortName.attr('data-sortStep', 'third');
+            $sortNameUp.addClass('hidden').removeClass('visible');
+            $sortNameDown.addClass('visible').removeClass('hidden');
+            productSort = [].concat(product);
+            productSort.sort(sortNameDown('name'));
+        } else if($sortName.attr('data-sortStep') === 'third') {
+            $sortName.attr('data-sortStep', 'first');
+            $sortNameDown.removeClass('visible').addClass('hidden');
+            productSort = [].concat(product);
+            console.log('азаза');
         }
-        render(product);
+        render(productSort);
     }
 
     $('#sortPrice').click(sortPrice);
 
     function sortPrice() {
-        console.log('сортировка почти сработала', $('#sortPriceDown').attr('data-sort') == 'off');
-        if ($('#sortPriceDown').attr('data-sort') == 'off') {
-            $('#sortPriceDown').removeClass('hidden').addClass('visible');
-            $('#sortPriceUp').addClass('hidden').removeClass('visible');
-            $('#sortPriceDown').attr('data-sort', 'on');
-            $('#sortPriceUp').attr('data-sort', 'off');
-            product.sort(sortPriceDown('price'));
-        } else {
-            $('#sortPriceUp').removeClass('hidden').addClass('visible');
-            $('#sortPriceDown').addClass('hidden').removeClass('visible');
-            $('#sortPriceUp').attr('data-sort', 'on');
-            $('#sortPriceDown').attr('data-sort', 'off');
-            product.sort(sortPriceUp('price'));
+        $sortNameDown.addClass('hidden').removeClass('visible');
+        $sortNameUp.addClass('hidden').removeClass('visible');
+        $sortName.attr('data-sortStep', 'first');
+        if($sortPrice.attr('data-sortStep') === 'first'){
+            $sortPrice.attr('data-sortStep', 'second');
+            $sortPriceUp.removeClass('hidden').addClass('visible');
+            $sortPriceDown.addClass('hidden').removeClass('visible');
+            productSort = [].concat(product);
+            productSort.sort(sortPriceUp('price'));
+        } else if($sortPrice.attr('data-sortStep') === 'second'){
+            $sortPrice.attr('data-sortStep', 'third');
+            $sortPriceUp.addClass('hidden').removeClass('visible');
+            $sortPriceDown.addClass('visible').removeClass('hidden');
+            productSort = [].concat(product);
+            productSort.sort(sortPriceDown('price'));
+        } else if($sortPrice.attr('data-sortStep') === 'third') {
+            $sortPrice.attr('data-sortStep', 'first');
+            $sortPriceDown.removeClass('visible').addClass('hidden');
+            productSort = [].concat(product);
+            console.log('азаза');
         }
-
-      //  product.sort(sortFn('price'));
-
-
-
-        render(product);
+        render(productSort);
     }
 
     function sortPriceUp(prop) {
@@ -583,8 +601,9 @@ $(document).ready(function () {
             }
             checkedAllCheckbox = [false, false, false];
             console.log(newProduct);
-
+            console.log(productSort, product);
             product.push(newProduct);
+            productSort = [].concat(product);
             console.log(product);
             $('html').css('overflow-y', 'auto');
             $nameProduct.removeClass('input-success input-danger').attr('data-correct', 'false');
@@ -602,7 +621,7 @@ $(document).ready(function () {
             $overlay.css('display', 'none');
 
 
-            render(product);
+            render(productSort);
 
             $('#addProductForm')[0].reset();
             console.log('addProduct', $btnAdd)
@@ -635,7 +654,8 @@ $(document).ready(function () {
             $requaredEmail.removeClass('visible').addClass('hidden');
             $countries.removeClass('visible').addClass('hidden');
             $cities.removeClass('visible').addClass('hidden');
-            render(product);
+            productSort = [].concat(product);
+            render(productSort);
             $('html').css('overflow-y', 'auto');
             $nameProduct.removeClass('input-success input-danger');
             $requaredNameProduct.removeClass('visible').addClass('hidden');
@@ -648,5 +668,5 @@ $(document).ready(function () {
         }
     }
 
-    render(product);
+    render(productSort);
 });
