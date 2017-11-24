@@ -45,33 +45,10 @@ $(document).ready(function () {
     var $requaredEmail = $('#requaredEmail');
     var $countries = $('#countries');
     var $cities = $('#cities');
+    var validationFields = {name: false, email: false, count: false, price: false};
+    var validationValue = true;
     var validation = {
         'productName': function () {
-            /*
-                        !$('#nameProduct').val().length ?
-                            $('#requaredNameProduct').removeClass('hidden').addClass('visible') :
-                            $('#requaredNameProduct').removeClass('visible').addClass('hidden');
-
-                        $('#nameProduct').val().length < 3 && $('#nameProduct').val().length ?
-                            $('#minRequaredNameProduct').removeClass('hidden').addClass('visible') :
-                            $('#minRequaredNameProduct').removeClass('visible').addClass('hidden');
-
-                        $('#nameProduct').val().length > 20 ?
-                            $('#maxRequaredNameProduct').removeClass('hidden').addClass('visible') :
-                            $('#maxRequaredNameProduct').removeClass('visible').addClass('hidden');
-                        $('#requaredNameProduct')
-                            .toggleClass('visible', !$('#nameProduct').val().length)
-                            .toggleClass('hidden', $('#nameProduct').val().length);
-
-                        $('#minRequaredNameProduct')
-                            .toggleClass('hidden', $('#nameProduct').val().length > 3 && !$('#nameProduct').val().length)
-                            .toggleClass('visible', $('#nameProduct').val().length < 3);
-
-
-                        $('#maxRequaredNameProduct')
-                            .toggleClass('visible', $('#nameProduct').val().length > 20)
-                            .toggleClass('hidden', $('#nameProduct').val().length < 20);
-            */
 
             if (!$nameProduct.val().length) {
                 $nameProduct
@@ -83,6 +60,7 @@ $(document).ready(function () {
                     .addClass('visible')
                     .text('Поле обязательно для заполнения');
                 console.log('валидация сработала');
+                validationFields.name = false;
             } else if ($nameProduct.val().length < 3 && $nameProduct.val().length) {
                 $nameProduct
                     .removeClass('input-success')
@@ -92,6 +70,7 @@ $(document).ready(function () {
                     .removeClass('hidden requared-success')
                     .addClass('visible')
                     .text('Минимальное количество символов 3');
+                validationFields.name = false;
             } else if ($nameProduct.val().length > 20) {
                 $nameProduct
                     .removeClass('input-success')
@@ -101,6 +80,7 @@ $(document).ready(function () {
                     .removeClass('hidden requared-success')
                     .addClass('visible')
                     .text('Максимально количество символов 20');
+                validationFields.name = false;
             } else if ($nameProduct.val().length >= 3 && $nameProduct.val().length <= 20) {
                 $nameProduct
                     .removeClass('input-danger')
@@ -110,6 +90,8 @@ $(document).ready(function () {
                     .text('Поле заполнено корректно')
                     .removeClass('hidden')
                     .addClass('visible requared-success');
+                validationFields.name = true;
+                console.log(validationFields);
             } else {
 
                 $nameProduct
@@ -120,7 +102,6 @@ $(document).ready(function () {
                     .removeClass('visible')
                     .addClass('hidden');
             }
-            console.log('валидация попыталась сработать');
         },
         'email': function () {
             var valEmail = /^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/i;
@@ -134,6 +115,7 @@ $(document).ready(function () {
                     .text('Поле обязательно для заполнения')
                     .removeClass('hidden requared-success')
                     .addClass('visible requared');
+                validationFields.email = false;
             } else if (!valEmail.test($email.val())) {
                 $email
                     .removeClass('input-success')
@@ -143,6 +125,7 @@ $(document).ready(function () {
                     .text('Поле заполнено не корректно')
                     .removeClass('hidden  requared-success')
                     .addClass('visible');
+                validationFields.email = false;
             } else {
                 $email
                     .removeClass('input-danger')
@@ -152,6 +135,8 @@ $(document).ready(function () {
                     .text('Поле заполнено корректно')
                     .removeClass('hidden')
                     .addClass('visible requared-success');
+                validationFields.email = true;
+                console.log(validationFields);
             }
         },
         'price': function () {
@@ -165,6 +150,7 @@ $(document).ready(function () {
                     .text('Поле обязательно для заполнения')
                     .removeClass('hidden requared-success')
                     .addClass('visible requared');
+                validationFields.price = false;
             } else if (!countNumber) {
                 $price
                     .removeClass('input-success')
@@ -174,7 +160,7 @@ $(document).ready(function () {
                     .text('Должны быть введены только цифры')
                     .removeClass('hidden requared-success')
                     .addClass('visible requared');
-
+                validationFields.price = false;
             } else {
                 $price
                     .removeClass('input-danger')
@@ -184,6 +170,8 @@ $(document).ready(function () {
                     .text('Поле заполнено корректно')
                     .removeClass('hidden')
                     .addClass('visible requared-success');
+                validationFields.price = true;
+                console.log(validationFields);
             }
         },
         'count': function () {
@@ -197,6 +185,7 @@ $(document).ready(function () {
                     .text('Поле обязательно для заполнения')
                     .removeClass('hidden requared-success')
                     .addClass('visible requared');
+                validationFields.count = false;
             } else if (!countNumber) {
                 $count
                     .removeClass('input-success')
@@ -206,7 +195,7 @@ $(document).ready(function () {
                     .text('Должны быть введены только цифры')
                     .removeClass('hidden requared-success')
                     .addClass('visible requared');
-
+                validationFields.count = false;
             } else {
                 $count
                     .removeClass('input-danger')
@@ -216,23 +205,35 @@ $(document).ready(function () {
                     .text('Поле заполнено корректно')
                     .removeClass('hidden')
                     .addClass('visible requared-success');
+                validationFields.count = true;
+                console.log(validationFields);
             }
         }
     };
-    $nameProduct.keyup(validation.productName).keyup(correct);
+    $nameProduct.keyup(validation.productName);
     $count.keyup(validation.count).keyup(correct);
     $price.keyup(validation.price).keyup(correct);
     $email.keyup(validation.email).keyup(correct);
 
-    function correct() {
-        if ($nameProduct.attr('data-correct') == 'true' && $count.attr('data-correct') == 'true' && $price.attr('data-correct') == 'true' && $email.attr('data-correct') == 'true') {
-            $btnModal.removeClass('disabled');
-            console.log('takoe');
-        } else {
-            $btnModal.addClass('disabled');
-        }
-    }
+    $nameProduct.blur(correct);
+    $count.blur(correct);
+    $price.blur(correct);
+    $email.blur(correct);
 
+    function correct() {
+
+        validationValue = true;
+
+        for (var key in validationFields){ //hasOwnProperty
+
+            if(!validationFields[key]){
+                console.log(validationValue);
+                validationValue = false;
+            }
+            console.log(validationValue);
+        }
+        $btnModal.toggleClass('disabled', !validationValue);
+    }
 
     function render(product) {
         $tbody.empty();
@@ -586,8 +587,8 @@ $(document).ready(function () {
         }
     }
     function addProduct() {
-        if ($nameProduct.attr('data-correct') === 'true' && $count.attr('data-correct') === 'true' && $price.attr('data-correct') === 'true' && $email.attr('data-correct') === 'true') {
-
+        if (validationValue) {
+            validationFields = {name: false, email: false, count: false, price: false};
             var newProduct = {};
             newProduct.name = $('#nameProduct').val();
             newProduct.email = $('#email').val();
@@ -600,6 +601,7 @@ $(document).ready(function () {
                 newProduct.checkedAllCheckbox = [].concat(checkedAllCheckbox);
             }
             checkedAllCheckbox = [false, false, false];
+
             console.log(newProduct);
             console.log(productSort, product);
             product.push(newProduct);
@@ -632,7 +634,7 @@ $(document).ready(function () {
     }
 
     function updProduct() {
-        if ($nameProduct.attr('data-correct') == 'true' && $count.attr('data-correct') == 'true' && $price.attr('data-correct') == 'true' && $email.attr('data-correct') == 'true') {
+        if (validationValue) {
             product[dataNumber].name = $('#nameProduct').val();
             product[dataNumber].email = $('#email').val();
             product[dataNumber].count = $('#count').val();
