@@ -210,6 +210,23 @@ $(document).ready(function () {
             }
         }
     };
+
+    $('#search').on('click', function(){
+        var productSearch = [];
+        var inputSearch = $('#inputSearch').val();
+        var search = new RegExp(inputSearch, "i");
+
+        for(var i = 0; i < product.length; i++){
+            if(search.test(product[i].name) ){
+                productSearch.push(product[i]);
+                console.log(product[i].name);
+            }
+        }
+        console.log(product, productSearch);
+        render(productSearch);
+
+    });
+
     $nameProduct.keyup(validation.productName);
     $count.keyup(validation.count);
     $price.keyup(validation.price);
@@ -238,26 +255,23 @@ $(document).ready(function () {
     function render(product) {
         $tbody.empty();
         var tr;
-        var price, price2, price3;
-        var price4;
+        var price, separatePrice, separateFirstPartPrice, comma;
+
         for (var i = 0; i < product.length; i++) {
             price = product[i].price.toFixed(2);
-            price2 = price.split('.');
-            price4 = [];
-            price3 = price2[0].split('');
-            console.log(price3);
-            for (var p = price3.length; p > 0; p--) {
+            separatePrice = price.split('.');
+            comma = [];
+            separateFirstPartPrice = separatePrice[0].split('');
+            for (var p = separateFirstPartPrice.length; p > 0; p--) {
 
-                price4.push(price3[p - 1]);
-                if ((price3.length - (p -1)) % 3 === 0 && p != 1) {
-                    price4.push(',');
+                comma.push(separateFirstPartPrice[p - 1]);
+                if ((separateFirstPartPrice.length - (p -1)) % 3 === 0 && p != 1) {
+                    comma.push(',');
                 }
             }
-            console.log('-----',price4);
-            price4.reverse();
-            price2[0] = price4.join('');
-            price = price2.join('.');
-
+            comma.reverse();
+            separatePrice[0] = comma.join('');
+            price = separatePrice.join('.');
 
             tr = $('<tr></tr>');
             tr.append(
@@ -273,7 +287,6 @@ $(document).ready(function () {
             ).attr('data-number', i);
             $tbody.append(tr);
         }
-
     }
 
     var $productList = $("#productList");
@@ -297,7 +310,6 @@ $(document).ready(function () {
     });
 
     $modalDelete.on('click', '.btn-danger', function () {
-
 
         $modalDelete.css('display', 'none');
         $overlay.css('display', 'none');
@@ -327,12 +339,9 @@ $(document).ready(function () {
         $('.modal-button').attr('data-id', 'btnAdd').text('Add');
         $('.modal-window-header').text('Add new product.');
 
-
         $('html').css('overflow-y', 'hidden');
         modal.css('display', 'block');
         $overlay.css('display', 'block');
-
-
     });
 
     $productList.on('click', '.btn-success', function () { //модалка update
@@ -523,7 +532,6 @@ $(document).ready(function () {
             return updProduct();
         }
     });
-
 
     var $sortName = $('#sortName');
     var $sortNameUp = $('#sortNameUp');
