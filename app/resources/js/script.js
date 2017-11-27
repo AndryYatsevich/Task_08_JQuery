@@ -211,9 +211,9 @@ $(document).ready(function () {
         }
     };
     $nameProduct.keyup(validation.productName);
-    $count.keyup(validation.count).keyup(correct);
-    $price.keyup(validation.price).keyup(correct);
-    $email.keyup(validation.email).keyup(correct);
+    $count.keyup(validation.count);
+    $price.keyup(validation.price);
+    $email.keyup(validation.email);
 
     $nameProduct.blur(correct);
     $count.blur(correct);
@@ -298,12 +298,14 @@ $(document).ready(function () {
     });
 
     $("#addNew").on('click', function () {          //модалка Add
+        validationFields = {name: false, email: false, count: false, price: false};
+        correct();
         if (modal) {
             modal.css('display', 'none');
             $('html').css('overflow-y', 'auto');
         }
         $('#addProductForm')[0].reset();
-
+        console.log(validationValue);
         modal = $modalAdd;
         $('.modal-button').attr('data-id', 'btnAdd').text('Add');
         $('.modal-window-header').text('Add new product.');
@@ -317,10 +319,12 @@ $(document).ready(function () {
     });
 
     $productList.on('click', '.btn-success', function () { //модалка update
+        validationFields = {name: false, email: false, count: false, price: false};
         if (modal) {
             modal.css('display', 'none');
             $('html').css('overflow-y', 'auto');
         }
+        console.log(validationValue);
         modal = $modalAdd;
         $('.modal-window-header').text('Edit product.');
         var $this = $(this);
@@ -334,28 +338,33 @@ $(document).ready(function () {
         $overlay.css('display', 'block');
 
         dataNumber = $this.closest('tr').attr('data-number');
-        $('#nameProduct').val(product[dataNumber].name);
-        $('#email').val(product[dataNumber].email);
-        $('#count').val(product[dataNumber].count);
-        $('#price').val(product[dataNumber].price);
-        var val = product[dataNumber].delivery;
+        $('#nameProduct').val(productSort[dataNumber].name);
+        $('#email').val(productSort[dataNumber].email);
+        $('#count').val(productSort[dataNumber].count);
+        $('#price').val(productSort[dataNumber].price);
+        $('#nameProduct').load(validation.productName);
+        $('#email').load(validation.email);
+        $('#count').load(validation.count);
+        $('#price').load(validation.price);
+        correct();
+        var val = productSort[dataNumber].delivery;
         $sel.val(val);
         if (val === 'Страна') {
             $countries.removeClass('hidden').addClass('visible');
-            console.log(product[dataNumber].countries);
-            $('[data-radio=' + product[dataNumber].countries + ']').prop("checked", true);
+            console.log(productSort[dataNumber].countries);
+            $('[data-radio=' + productSort[dataNumber].countries + ']').prop("checked", true);
         } else if (val === 'Пусто') {
             $cities.removeClass('visible').addClass('hidden');
             $countries.removeClass('visible').addClass('hidden');
         } else {
             $cities.removeClass('hidden').addClass('visible');
             var checkAll = true;
-            for (var j = 0; j < product[dataNumber].checkedAllCheckbox.length; j++) {
-                if (!product[dataNumber].checkedAllCheckbox[j]) {
+            for (var j = 0; j < productSort[dataNumber].checkedAllCheckbox.length; j++) {
+                if (!productSort[dataNumber].checkedAllCheckbox[j]) {
                     checkAll = false;
 
                 }
-                $('[data-check=' + j + ']').prop("checked", product[dataNumber].checkedAllCheckbox[j]);
+                $('[data-check=' + j + ']').prop("checked", productSort[dataNumber].checkedAllCheckbox[j]);
                 $checkAll.prop("checked", checkAll);
             }
         }
@@ -414,6 +423,7 @@ $(document).ready(function () {
             $requaredEmail.removeClass('visible').addClass('hidden');
             $countries.removeClass('visible').addClass('hidden');
             $cities.removeClass('visible').addClass('hidden');
+            validationValue = false;
         }
     });
 
@@ -555,6 +565,7 @@ $(document).ready(function () {
             productSort = [].concat(product);
             console.log('азаза');
         }
+
         render(productSort);
     }
 
@@ -624,6 +635,7 @@ $(document).ready(function () {
 
 
             render(productSort);
+            validationFields = {name: false, email: false, count: false, price: false};
 
             $('#addProductForm')[0].reset();
             console.log('addProduct', $btnAdd)
@@ -635,15 +647,15 @@ $(document).ready(function () {
 
     function updProduct() {
         if (validationValue) {
-            product[dataNumber].name = $('#nameProduct').val();
-            product[dataNumber].email = $('#email').val();
-            product[dataNumber].count = $('#count').val();
-            product[dataNumber].price = $('#price').val();
-            product[dataNumber].delivery = $sel.val();
+            productSort[dataNumber].name = $('#nameProduct').val();
+            productSort[dataNumber].email = $('#email').val();
+            productSort[dataNumber].count = $('#count').val();
+            productSort[dataNumber].price = $('#price').val();
+            productSort[dataNumber].delivery = $sel.val();
             if ($sel.val() === 'Страна') {
-                product[dataNumber].countries = selectedRadio;
+                productSort[dataNumber].countries = selectedRadio;
             } else {
-                product[dataNumber].checkedAllCheckbox = [].concat(checkedAllCheckbox);
+                productSort[dataNumber].checkedAllCheckbox = [].concat(checkedAllCheckbox);
             }
             checkedAllCheckbox = [false, false, false];
             $nameProduct.removeClass('input-success input-danger').attr('data-correct', 'false');
@@ -665,7 +677,9 @@ $(document).ready(function () {
             $modalAdd.css('display', 'none');
             $overlay.css('display', 'none');
             console.log('updProduct сработала', product);
+            validationFields = {name: false, email: false, count: false, price: false};
         } else {
+            console.log(validationValue);
             alert('Заполните корректно все обязательные поля');
         }
     }
