@@ -224,9 +224,9 @@ $(document).ready(function () {
 
         validationValue = true;
 
-        for (var key in validationFields){ //hasOwnProperty
+        for (var key in validationFields) { //hasOwnProperty
 
-            if(!validationFields[key]){
+            if (!validationFields[key]) {
                 console.log(validationValue);
                 validationValue = false;
             }
@@ -238,16 +238,33 @@ $(document).ready(function () {
     function render(product) {
         $tbody.empty();
         var tr;
-        var price;
-
+        var price, price2, price3;
+        var price4;
         for (var i = 0; i < product.length; i++) {
-            price = parseInt(product[i].price).toFixed(2);
+            price = product[i].price.toFixed(2);
+            price2 = price.split('.');
+            price4 = [];
+            price3 = price2[0].split('');
+            console.log(price3);
+            for (var p = price3.length; p > 0; p--) {
+
+                price4.push(price3[p - 1]);
+                if ((price3.length - (p -1)) % 3 === 0 && p != 1) {
+                    price4.push(',');
+                }
+            }
+            console.log('-----',price4);
+            price4.reverse();
+            price2[0] = price4.join('');
+            price = price2.join('.');
+
+
             tr = $('<tr></tr>');
             tr.append(
                 $('<td></td>').text(product[i].name).append(
                     $('<span></span>').addClass('badge pull-right').text(product[i].count)
                 ),
-                $('<td></td>').text('$' + price.replace(/(?=(\d\d\d)+([^\d]|$))/g, ",")),
+                $('<td></td>').text('$' + price),
                 $('<td></td>').append(
                     $('<button></button>').addClass('btn btn-success').text('Edit'),
                     $('<span> </span>'),
@@ -342,10 +359,10 @@ $(document).ready(function () {
         $('#email').val(productSort[dataNumber].email);
         $('#count').val(productSort[dataNumber].count);
         $('#price').val(productSort[dataNumber].price);
-        $('#nameProduct').load(validation.productName);
-        $('#email').load(validation.email);
-        $('#count').load(validation.count);
-        $('#price').load(validation.price);
+        validation.productName();
+        validation.email();
+        validation.count();
+        validation.price();
         correct();
         var val = productSort[dataNumber].delivery;
         $sel.val(val);
@@ -368,40 +385,40 @@ $(document).ready(function () {
                 $checkAll.prop("checked", checkAll);
             }
         }
-        if ($count.val() && $nameProduct.val() && $price.val() && $email.val()) {
-            $count
-                .removeClass('input-danger')
-                .addClass('input-success')
-                .attr('data-correct', 'true');
-            $requaredCount
-                .text('Поле заполнено корректно')
-                .removeClass('hidden')
-                .addClass('visible requared-success');
-            $price
-                .removeClass('input-danger')
-                .addClass('input-success')
-                .attr('data-correct', 'true');
-            $requaredPrice
-                .text('Поле заполнено корректно')
-                .removeClass('hidden')
-                .addClass('visible requared-success');
-            $nameProduct
-                .removeClass('input-danger')
-                .addClass('input-success')
-                .attr('data-correct', 'true');
-            $requaredNameProduct
-                .text('Поле заполнено корректно')
-                .removeClass('hidden')
-                .addClass('visible requared-success');
-            $email
-                .removeClass('input-danger')
-                .addClass('input-success')
-                .attr('data-correct', 'true');
-            $requaredEmail
-                .text('Поле заполнено корректно')
-                .removeClass('hidden')
-                .addClass('visible requared-success');
-        }
+        /* if ($count.val() && $nameProduct.val() && $price.val() && $email.val()) {
+             $count
+                 .removeClass('input-danger')
+                 .addClass('input-success')
+                 .attr('data-correct', 'true');
+             $requaredCount
+                 .text('Поле заполнено корректно')
+                 .removeClass('hidden')
+                 .addClass('visible requared-success');
+             $price
+                 .removeClass('input-danger')
+                 .addClass('input-success')
+                 .attr('data-correct', 'true');
+             $requaredPrice
+                 .text('Поле заполнено корректно')
+                 .removeClass('hidden')
+                 .addClass('visible requared-success');
+             $nameProduct
+                 .removeClass('input-danger')
+                 .addClass('input-success')
+                 .attr('data-correct', 'true');
+             $requaredNameProduct
+                 .text('Поле заполнено корректно')
+                 .removeClass('hidden')
+                 .addClass('visible requared-success');
+             $email
+                 .removeClass('input-danger')
+                 .addClass('input-success')
+                 .attr('data-correct', 'true');
+             $requaredEmail
+                 .text('Поле заполнено корректно')
+                 .removeClass('hidden')
+                 .addClass('visible requared-success');
+         }*/
 
         console.log('клик по кнопке добавить', product[dataNumber].name);
     });
@@ -516,23 +533,24 @@ $(document).ready(function () {
     var $sortPriceUp = $('#sortPriceUp');
     var $sortPriceDown = $('#sortPriceDown');
     $sortName.click(sortName);
+
     function sortName() {
         $sortPriceDown.addClass('hidden').removeClass('visible');
         $sortPriceUp.addClass('hidden').removeClass('visible');
         $sortPrice.attr('data-sortStep', 'first');
-        if($sortName.attr('data-sortStep') === 'first'){
+        if ($sortName.attr('data-sortStep') === 'first') {
             $sortName.attr('data-sortStep', 'second');
             $sortNameUp.removeClass('hidden').addClass('visible');
             $sortNameDown.addClass('hidden').removeClass('visible');
             productSort = [].concat(product);
             productSort.sort(sortNameUp('name'));
-        } else if($sortName.attr('data-sortStep') === 'second'){
+        } else if ($sortName.attr('data-sortStep') === 'second') {
             $sortName.attr('data-sortStep', 'third');
             $sortNameUp.addClass('hidden').removeClass('visible');
             $sortNameDown.addClass('visible').removeClass('hidden');
             productSort = [].concat(product);
             productSort.sort(sortNameDown('name'));
-        } else if($sortName.attr('data-sortStep') === 'third') {
+        } else if ($sortName.attr('data-sortStep') === 'third') {
             $sortName.attr('data-sortStep', 'first');
             $sortNameDown.removeClass('visible').addClass('hidden');
             productSort = [].concat(product);
@@ -547,19 +565,19 @@ $(document).ready(function () {
         $sortNameDown.addClass('hidden').removeClass('visible');
         $sortNameUp.addClass('hidden').removeClass('visible');
         $sortName.attr('data-sortStep', 'first');
-        if($sortPrice.attr('data-sortStep') === 'first'){
+        if ($sortPrice.attr('data-sortStep') === 'first') {
             $sortPrice.attr('data-sortStep', 'second');
             $sortPriceUp.removeClass('hidden').addClass('visible');
             $sortPriceDown.addClass('hidden').removeClass('visible');
             productSort = [].concat(product);
             productSort.sort(sortPriceUp('price'));
-        } else if($sortPrice.attr('data-sortStep') === 'second'){
+        } else if ($sortPrice.attr('data-sortStep') === 'second') {
             $sortPrice.attr('data-sortStep', 'third');
             $sortPriceUp.addClass('hidden').removeClass('visible');
             $sortPriceDown.addClass('visible').removeClass('hidden');
             productSort = [].concat(product);
             productSort.sort(sortPriceDown('price'));
-        } else if($sortPrice.attr('data-sortStep') === 'third') {
+        } else if ($sortPrice.attr('data-sortStep') === 'third') {
             $sortPrice.attr('data-sortStep', 'first');
             $sortPriceDown.removeClass('visible').addClass('hidden');
             productSort = [].concat(product);
@@ -577,7 +595,7 @@ $(document).ready(function () {
 
     function sortPriceDown(prop) {
         return function (a, b) {
-            return a[prop] - b[prop] ;
+            return a[prop] - b[prop];
         }
     }
 
@@ -589,6 +607,7 @@ $(document).ready(function () {
             return c > d;
         }
     }
+
     function sortNameDown(prop) {
         return function (a, b) {
             var c = b[prop];
@@ -597,6 +616,7 @@ $(document).ready(function () {
             return c < d;
         }
     }
+
     function addProduct() {
         if (validationValue) {
             validationFields = {name: false, email: false, count: false, price: false};
@@ -649,8 +669,8 @@ $(document).ready(function () {
         if (validationValue) {
             productSort[dataNumber].name = $('#nameProduct').val();
             productSort[dataNumber].email = $('#email').val();
-            productSort[dataNumber].count = $('#count').val();
-            productSort[dataNumber].price = $('#price').val();
+            productSort[dataNumber].count = parseInt($('#count').val());
+            productSort[dataNumber].price = parseInt($('#price').val());
             productSort[dataNumber].delivery = $sel.val();
             if ($sel.val() === 'Страна') {
                 productSort[dataNumber].countries = selectedRadio;
