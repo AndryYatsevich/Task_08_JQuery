@@ -9,8 +9,9 @@
 $(document).ready(function () {
 
     var product = [
-        {name: 'Товар 4', email: 'product1@mail.com', count: 5, price: 12321232123.2, delivery: 'Пусто'},
+        {id: 0, name: 'Товар 4', email: 'product1@mail.com', count: 5, price: 12321232123.2, delivery: 'Пусто'},
         {
+            id: 1,
             name: 'Товар 55',
             email: 'product2@mail.com',
             count: 2,
@@ -19,14 +20,33 @@ $(document).ready(function () {
             countries: 1
         },
         {
+            id: 2,
             name: 'Товар 3',
             email: 'product3@mail.com',
             count: 7,
             price: 73000000.4343,
             delivery: 'Город',
             checkedAllCheckbox: [true, true, true]
+        },
+        {
+            id: 3,
+            name: 'Товар 5',
+            email: 'product3@mail.com',
+            count: 7,
+            price: 73003453000.4343,
+            delivery: 'Город',
+            checkedAllCheckbox: [true, true, true]
+        },
+        {
+            id: 4,
+            name: 'Товар 555',
+            email: 'product3@mail.com',
+            count: 7,
+            price: 730000.4343,
+            delivery: 'Город',
+            checkedAllCheckbox: [true, true, true]
         }];
-    var productSort = [].concat(product);
+    var productSort = [].concat(product); //
     console.log(productSort, product);
     var $table = $('#productList');
     var $tbody = $('tbody', $table);
@@ -212,19 +232,17 @@ $(document).ready(function () {
     };
 
     $('#search').on('click', function(){
-        var productSearch = [];
-        var inputSearch = $('#inputSearch').val();
-        var search = new RegExp(inputSearch, "i");
+        productSort = [];
+        var inputSearch = $('#inputSearch').val().toLowerCase();
 
         for(var i = 0; i < product.length; i++){
-            if(search.test(product[i].name) ){
-                productSearch.push(product[i]);
-                console.log(product[i].name);
+            if(product[i].name.toLowerCase().indexOf(inputSearch) !== -1){
+                productSort.push(product[i]);
             }
-        }
-        console.log(product, productSearch);
-        render(productSearch);
-
+           console.log(product[i].name.indexOf(inputSearch));
+       }
+        console.log('Product: ', product,'ProductSort', productSort);
+render(productSort);
     });
 
     $nameProduct.keyup(validation.productName);
@@ -284,7 +302,7 @@ $(document).ready(function () {
                     $('<span> </span>'),
                     $('<button></button>').addClass('btn btn-danger').text('Delete')
                 )
-            ).attr('data-number', i);
+            ).attr('data-number', product[i].id);
             $tbody.append(tr);
         }
     }
@@ -293,6 +311,7 @@ $(document).ready(function () {
     var $modalDelete = $("#modalDelete");
     var $overlay = $("#overlay");
     var $modalAdd = $("#modalAdd");
+    var productSortObj;
 
     $productList.on('click', '.btn-danger', function () {
         if (modal) {
@@ -305,8 +324,12 @@ $(document).ready(function () {
         $modalDelete.css('display', 'block');
         $overlay.css('display', 'block');
         $('html').css('overflow-y', 'hidden');
-
         dataNumber = $this.closest('tr').attr('data-number');
+        productSortObj = productSort.filter(function (v) {
+            return v.id == dataNumber;
+        });
+console.log(productSortObj);
+
     });
 
     $modalDelete.on('click', '.btn-danger', function () {
@@ -317,9 +340,17 @@ $(document).ready(function () {
     });
 
     $modalDelete.on('click', '.btn-success', function () {
-        product.splice(dataNumber, 1);
+        product = product.filter(function (v) {
+            return !(v.id == dataNumber);
+        });
+        productSort = productSort.filter(function (v) {
+            return !(v.id == dataNumber);
+        });
+        /*productSortFist = productSortFist.filter(function (v) {
+            return !(v.id == dataNumber);
+        });*/
         console.log(product);
-        render(product);
+        render(productSort);
         $('html').css('overflow-y', 'auto');
         $modalDelete.css('display', 'none');
         $overlay.css('display', 'none');
@@ -364,33 +395,36 @@ $(document).ready(function () {
         $overlay.css('display', 'block');
 
         dataNumber = $this.closest('tr').attr('data-number');
-        $('#nameProduct').val(productSort[dataNumber].name);
-        $('#email').val(productSort[dataNumber].email);
-        $('#count').val(productSort[dataNumber].count);
-        $('#price').val(productSort[dataNumber].price);
+        productSortObj = productSort.filter(function (v) {
+            return v.id == dataNumber;
+        });
+        $('#nameProduct').val(productSortObj[0].name);
+        $('#email').val(productSortObj[0].email);
+        $('#count').val(productSortObj[0].count);
+        $('#price').val(productSortObj[0].price);
         validation.productName();
         validation.email();
         validation.count();
         validation.price();
         correct();
-        var val = productSort[dataNumber].delivery;
+        var val = productSortObj[0].delivery;
         $sel.val(val);
         if (val === 'Страна') {
             $countries.removeClass('hidden').addClass('visible');
-            console.log(productSort[dataNumber].countries);
-            $('[data-radio=' + productSort[dataNumber].countries + ']').prop("checked", true);
+            console.log(productSortObj[0].countries);
+            $('[data-radio=' + productSortObj[0].countries + ']').prop("checked", true);
         } else if (val === 'Пусто') {
             $cities.removeClass('visible').addClass('hidden');
             $countries.removeClass('visible').addClass('hidden');
         } else {
             $cities.removeClass('hidden').addClass('visible');
             var checkAll = true;
-            for (var j = 0; j < productSort[dataNumber].checkedAllCheckbox.length; j++) {
-                if (!productSort[dataNumber].checkedAllCheckbox[j]) {
+            for (var j = 0; j < productSortObj[0].checkedAllCheckbox.length; j++) {
+                if (!productSortObj[0].checkedAllCheckbox[j]) {
                     checkAll = false;
 
                 }
-                $('[data-check=' + j + ']').prop("checked", productSort[dataNumber].checkedAllCheckbox[j]);
+                $('[data-check=' + j + ']').prop("checked", productSortObj[0].checkedAllCheckbox[j]);
                 $checkAll.prop("checked", checkAll);
             }
         }
@@ -550,19 +584,16 @@ $(document).ready(function () {
             $sortName.attr('data-sortStep', 'second');
             $sortNameUp.removeClass('hidden').addClass('visible');
             $sortNameDown.addClass('hidden').removeClass('visible');
-            productSort = [].concat(product);
             productSort.sort(sortNameUp('name'));
         } else if ($sortName.attr('data-sortStep') === 'second') {
             $sortName.attr('data-sortStep', 'third');
             $sortNameUp.addClass('hidden').removeClass('visible');
             $sortNameDown.addClass('visible').removeClass('hidden');
-            productSort = [].concat(product);
             productSort.sort(sortNameDown('name'));
         } else if ($sortName.attr('data-sortStep') === 'third') {
             $sortName.attr('data-sortStep', 'first');
             $sortNameDown.removeClass('visible').addClass('hidden');
             productSort = [].concat(product);
-            console.log('азаза');
         }
         render(productSort);
     }
@@ -577,19 +608,16 @@ $(document).ready(function () {
             $sortPrice.attr('data-sortStep', 'second');
             $sortPriceUp.removeClass('hidden').addClass('visible');
             $sortPriceDown.addClass('hidden').removeClass('visible');
-            productSort = [].concat(product);
             productSort.sort(sortPriceUp('price'));
         } else if ($sortPrice.attr('data-sortStep') === 'second') {
             $sortPrice.attr('data-sortStep', 'third');
             $sortPriceUp.addClass('hidden').removeClass('visible');
             $sortPriceDown.addClass('visible').removeClass('hidden');
-            productSort = [].concat(product);
             productSort.sort(sortPriceDown('price'));
         } else if ($sortPrice.attr('data-sortStep') === 'third') {
             $sortPrice.attr('data-sortStep', 'first');
             $sortPriceDown.removeClass('visible').addClass('hidden');
             productSort = [].concat(product);
-            console.log('азаза');
         }
 
         render(productSort);
