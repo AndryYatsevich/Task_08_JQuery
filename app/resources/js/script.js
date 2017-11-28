@@ -53,7 +53,6 @@ $(document).ready(function () {
     var dataNumber;
     var modal;
     var $btnAdd;
-    var $btnUpd;
     var $nameProduct = $('#nameProduct');
     var $requaredNameProduct = $('#requaredNameProduct');
     var $count = $('#count');
@@ -73,8 +72,7 @@ $(document).ready(function () {
             if (!$nameProduct.val().length) {
                 $nameProduct
                     .removeClass('input-success')
-                    .addClass('input-danger')
-                    .attr('data-correct', 'false');
+                    .addClass('input-danger');
                 $requaredNameProduct
                     .removeClass('hidden requared-success')
                     .addClass('visible')
@@ -84,8 +82,7 @@ $(document).ready(function () {
             } else if ($nameProduct.val().length < 3 && $nameProduct.val().length) {
                 $nameProduct
                     .removeClass('input-success')
-                    .addClass('input-danger')
-                    .attr('data-correct', 'false');
+                    .addClass('input-danger');
                 $requaredNameProduct
                     .removeClass('hidden requared-success')
                     .addClass('visible')
@@ -94,8 +91,7 @@ $(document).ready(function () {
             } else if ($nameProduct.val().length > 20) {
                 $nameProduct
                     .removeClass('input-success')
-                    .addClass('input-danger')
-                    .attr('data-correct', 'false');
+                    .addClass('input-danger');
                 $requaredNameProduct
                     .removeClass('hidden requared-success')
                     .addClass('visible')
@@ -104,8 +100,7 @@ $(document).ready(function () {
             } else if ($nameProduct.val().length >= 3 && $nameProduct.val().length <= 20) {
                 $nameProduct
                     .removeClass('input-danger')
-                    .addClass('input-success')
-                    .attr('data-correct', 'true');
+                    .addClass('input-success');
                 $requaredNameProduct
                     .text('Поле заполнено корректно')
                     .removeClass('hidden')
@@ -116,8 +111,7 @@ $(document).ready(function () {
 
                 $nameProduct
                     .removeClass('input-success')
-                    .addClass('input-danger')
-                    .attr('data-correct', 'false');
+                    .addClass('input-danger');
                 $requaredNameProduct
                     .removeClass('visible')
                     .addClass('hidden');
@@ -129,8 +123,7 @@ $(document).ready(function () {
             if (!$email.val()) {
                 $email
                     .removeClass('input-success')
-                    .addClass('input-danger')
-                    .attr('data-correct', 'false');
+                    .addClass('input-danger');
                 $requaredEmail
                     .text('Поле обязательно для заполнения')
                     .removeClass('hidden requared-success')
@@ -139,8 +132,7 @@ $(document).ready(function () {
             } else if (!valEmail.test($email.val())) {
                 $email
                     .removeClass('input-success')
-                    .addClass('input-danger')
-                    .attr('data-correct', 'false');
+                    .addClass('input-danger');
                 $requaredEmail
                     .text('Поле заполнено не корректно')
                     .removeClass('hidden  requared-success')
@@ -149,8 +141,7 @@ $(document).ready(function () {
             } else {
                 $email
                     .removeClass('input-danger')
-                    .addClass('input-success')
-                    .attr('data-correct', 'true');
+                    .addClass('input-success');
                 $requaredEmail
                     .text('Поле заполнено корректно')
                     .removeClass('hidden')
@@ -164,8 +155,7 @@ $(document).ready(function () {
             if (!$price.val()) {
                 $price
                     .removeClass('input-success')
-                    .addClass('input-danger')
-                    .attr('data-correct', 'false');
+                    .addClass('input-danger');
                 $requaredPrice
                     .text('Поле обязательно для заполнения')
                     .removeClass('hidden requared-success')
@@ -174,8 +164,7 @@ $(document).ready(function () {
             } else if (!countNumber) {
                 $price
                     .removeClass('input-success')
-                    .addClass('input-danger')
-                    .attr('data-correct', 'false');
+                    .addClass('input-danger');
                 $requaredPrice
                     .text('Должны быть введены только цифры')
                     .removeClass('hidden requared-success')
@@ -184,8 +173,7 @@ $(document).ready(function () {
             } else {
                 $price
                     .removeClass('input-danger')
-                    .addClass('input-success')
-                    .attr('data-correct', 'true');
+                    .addClass('input-success');
                 $requaredPrice
                     .text('Поле заполнено корректно')
                     .removeClass('hidden')
@@ -199,8 +187,7 @@ $(document).ready(function () {
             if (!$count.val()) {
                 $count
                     .removeClass('input-success')
-                    .addClass('input-danger')
-                    .attr('data-correct', 'false');
+                    .addClass('input-danger');
                 $requaredCount
                     .text('Поле обязательно для заполнения')
                     .removeClass('hidden requared-success')
@@ -209,8 +196,7 @@ $(document).ready(function () {
             } else if (!countNumber) {
                 $count
                     .removeClass('input-success')
-                    .addClass('input-danger')
-                    .attr('data-correct', 'false');
+                    .addClass('input-danger');
                 $requaredCount
                     .text('Должны быть введены только цифры')
                     .removeClass('hidden requared-success')
@@ -219,8 +205,7 @@ $(document).ready(function () {
             } else {
                 $count
                     .removeClass('input-danger')
-                    .addClass('input-success')
-                    .attr('data-correct', 'true');
+                    .addClass('input-success');
                 $requaredCount
                     .text('Поле заполнено корректно')
                     .removeClass('hidden')
@@ -231,18 +216,18 @@ $(document).ready(function () {
         }
     };
 
-    $('#search').on('click', function(){
+    $('#search').on('click', function () {
         productSort = [];
         var inputSearch = $('#inputSearch').val().toLowerCase();
 
-        for(var i = 0; i < product.length; i++){
-            if(product[i].name.toLowerCase().indexOf(inputSearch) !== -1){
+        for (var i = 0; i < product.length; i++) {
+            if (product[i].name.toLowerCase().indexOf(inputSearch) !== -1) {
                 productSort.push(product[i]);
             }
-           console.log(product[i].name.indexOf(inputSearch));
-       }
-        console.log('Product: ', product,'ProductSort', productSort);
-render(productSort);
+            console.log(product[i].name.indexOf(inputSearch));
+        }
+        console.log('Product: ', product, 'ProductSort', productSort);
+        render(productSort);
     });
 
     $nameProduct.keyup(validation.productName);
@@ -283,7 +268,7 @@ render(productSort);
             for (var p = separateFirstPartPrice.length; p > 0; p--) {
 
                 comma.push(separateFirstPartPrice[p - 1]);
-                if ((separateFirstPartPrice.length - (p -1)) % 3 === 0 && p != 1) {
+                if ((separateFirstPartPrice.length - (p - 1)) % 3 === 0 && p != 1) {
                     comma.push(',');
                 }
             }
@@ -328,15 +313,12 @@ render(productSort);
         productSortObj = productSort.filter(function (v) {
             return v.id == dataNumber;
         });
-console.log(productSortObj);
-
     });
 
     $modalDelete.on('click', '.btn-danger', function () {
 
         $modalDelete.css('display', 'none');
         $overlay.css('display', 'none');
-        console.log('клик по кнопке No');
     });
 
     $modalDelete.on('click', '.btn-success', function () {
@@ -349,7 +331,6 @@ console.log(productSortObj);
         /*productSortFist = productSortFist.filter(function (v) {
             return !(v.id == dataNumber);
         });*/
-        console.log(product);
         render(productSort);
         $('html').css('overflow-y', 'auto');
         $modalDelete.css('display', 'none');
@@ -365,7 +346,6 @@ console.log(productSortObj);
             $('html').css('overflow-y', 'auto');
         }
         $('#addProductForm')[0].reset();
-        console.log(validationValue);
         modal = $modalAdd;
         $('.modal-button').attr('data-id', 'btnAdd').text('Add');
         $('.modal-window-header').text('Add new product.');
@@ -422,50 +402,12 @@ console.log(productSortObj);
             for (var j = 0; j < productSortObj[0].checkedAllCheckbox.length; j++) {
                 if (!productSortObj[0].checkedAllCheckbox[j]) {
                     checkAll = false;
-
                 }
                 $('[data-check=' + j + ']').prop("checked", productSortObj[0].checkedAllCheckbox[j]);
                 $checkAll.prop("checked", checkAll);
             }
         }
-        /* if ($count.val() && $nameProduct.val() && $price.val() && $email.val()) {
-             $count
-                 .removeClass('input-danger')
-                 .addClass('input-success')
-                 .attr('data-correct', 'true');
-             $requaredCount
-                 .text('Поле заполнено корректно')
-                 .removeClass('hidden')
-                 .addClass('visible requared-success');
-             $price
-                 .removeClass('input-danger')
-                 .addClass('input-success')
-                 .attr('data-correct', 'true');
-             $requaredPrice
-                 .text('Поле заполнено корректно')
-                 .removeClass('hidden')
-                 .addClass('visible requared-success');
-             $nameProduct
-                 .removeClass('input-danger')
-                 .addClass('input-success')
-                 .attr('data-correct', 'true');
-             $requaredNameProduct
-                 .text('Поле заполнено корректно')
-                 .removeClass('hidden')
-                 .addClass('visible requared-success');
-             $email
-                 .removeClass('input-danger')
-                 .addClass('input-success')
-                 .attr('data-correct', 'true');
-             $requaredEmail
-                 .text('Поле заполнено корректно')
-                 .removeClass('hidden')
-                 .addClass('visible requared-success');
-         }*/
-
-        console.log('клик по кнопке добавить', product[dataNumber].name);
     });
-
 
     $(document).on('click', function (e) {
         if (e.target.className === 'overlay') {
@@ -492,7 +434,6 @@ console.log(productSortObj);
 
         var val = $sel.val();
 
-
         $countries
             .toggleClass('hidden', val !== 'Страна')
             .toggleClass('visible', val === 'Страна');
@@ -500,27 +441,9 @@ console.log(productSortObj);
         $cities
             .toggleClass('hidden', val !== 'Город')
             .toggleClass('visible', val === 'Город');
-
-        /*if (val === 'Страна') {
-            $('#countries').css('display', 'block');
-        } else {
-            $('#countries').css('display', 'none');
-        }
-        if (val === 'Город') {
-            $('#cities').css('display', 'block');
-        } else {
-            $('#cities').css('display', 'none');
-        }*/
-        console.log(val);
     });
     var $checkAll = $('#checkAll');
 
-    /*  $checkAll.click(function () {
-          if (!$checkAll.is(":checked"))
-              $("input[type=checkbox]").prop('checked', true);
-          else
-              $("input[type=checkbox]").prop('checked', false);
-      });*/
 
     $checkAll.click(selectAll);
     var checkedAllCheckbox = [false, false, false];
@@ -540,7 +463,6 @@ console.log(productSortObj);
         }
 
         $checkAll.prop("checked", checkAll);
-        //return checkedAllCheckbox;
     }
 
     function selectAll() {
@@ -672,13 +594,9 @@ console.log(productSortObj);
             console.log(newProduct);
             console.log(productSort, product);
             product.push(newProduct);
-            productSort = [].concat(product);
+            productSort.push(newProduct);
             console.log(product);
             $('html').css('overflow-y', 'auto');
-            $nameProduct.removeClass('input-success input-danger').attr('data-correct', 'false');
-            $count.removeClass('input-success input-danger').attr('data-correct', 'false');
-            $price.removeClass('input-success input-danger').attr('data-correct', 'false');
-            $email.removeClass('input-success input-danger').attr('data-correct', 'false');
             $requaredNameProduct.removeClass('visible').addClass('hidden');
             $requaredCount.removeClass('visible').addClass('hidden');
             $requaredPrice.removeClass('visible').addClass('hidden');
@@ -714,17 +632,13 @@ console.log(productSortObj);
                 productSort[dataNumber].checkedAllCheckbox = [].concat(checkedAllCheckbox);
             }
             checkedAllCheckbox = [false, false, false];
-            $nameProduct.removeClass('input-success input-danger').attr('data-correct', 'false');
-            $count.removeClass('input-success input-danger').attr('data-correct', 'false');
-            $price.removeClass('input-success input-danger').attr('data-correct', 'false');
-            $email.removeClass('input-success input-danger').attr('data-correct', 'false');
             $requaredNameProduct.removeClass('visible').addClass('hidden');
             $requaredCount.removeClass('visible').addClass('hidden');
             $requaredPrice.removeClass('visible').addClass('hidden');
             $requaredEmail.removeClass('visible').addClass('hidden');
             $countries.removeClass('visible').addClass('hidden');
             $cities.removeClass('visible').addClass('hidden');
-            productSort = [].concat(product);
+            //productSort = [].concat(product);
             render(productSort);
             $('html').css('overflow-y', 'auto');
             $nameProduct.removeClass('input-success input-danger');
