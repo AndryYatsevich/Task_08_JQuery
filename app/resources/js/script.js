@@ -47,12 +47,10 @@ $(document).ready(function () {
             checkedAllCheckbox: [true, true, true]
         }];
     var productSort = [].concat(product); //
-    console.log(productSort, product);
-    var $productList = $("#productList");
+    var $productList = $('#productList');
     var $tbody = $('tbody', $productList);
     var dataNumber;
     var modal;
-    var $btnAdd;
     var $nameProduct = $('#nameProduct');
     var $requiredNameProduct = $('#requiredNameProduct');
     var $count = $('#count');
@@ -64,89 +62,71 @@ $(document).ready(function () {
     var $requiredEmail = $('#requiredEmail');
     var $countries = $('#countries');
     var $cities = $('#cities');
+    var $modalHeader = $('.modal-window-header');
+    var $html = $('html');
     var validationFields = {name: false, email: false, count: false, price: false};
     var validationValue = true;
+
     var validation = {
         'productName': function () {
-
-            if (!$nameProduct.val().length) {
+            var $nameProductVal = $nameProduct.val();
+            if ($nameProductVal.length < 3 || $nameProductVal.length > 20 || !$nameProductVal.length) {
                 changeClassesValidation($nameProduct, 'dangerInput');
                 changeClassesValidation($requiredNameProduct, 'incorrectly');
-                $requiredNameProduct.text('Поле обязательно для заполнения');
+                !$nameProductVal.length ? $requiredNameProduct.text('Поле обязательно для заполнения')
+                    : $requiredNameProduct.text('Минимальное количество символов 3, максимальное 20.');
                 validationFields.name = false;
-            } else if ($nameProduct.val().length < 3 && $nameProduct.val().length) {
-                changeClassesValidation($nameProduct, 'dangerInput');
-                changeClassesValidation($requiredNameProduct, 'incorrectly');
-                $requiredNameProduct.text('Минимальное количество символов 3');
-                validationFields.name = false;
-            } else if ($nameProduct.val().length > 20) {
-                changeClassesValidation($nameProduct, 'dangerInput');
-                changeClassesValidation($requiredNameProduct, 'incorrectly');
-                $requiredNameProduct.text('Максимально количество символов 20');
-                validationFields.name = false;
-            } else if ($nameProduct.val().length >= 3 && $nameProduct.val().length <= 20) {
+            } else {
                 changeClassesValidation($nameProduct, 'successInput');
                 changeClassesValidation($requiredNameProduct, 'correctField');
                 validationFields.name = true;
-                console.log(validationFields);
             }
         },
         'email': function () {
             var valEmail = /^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/i;
-
-            if (!$email.val()) {
+            var $mailVal = $email.val();
+            if (!$mailVal || !valEmail.test($mailVal)) {
                 changeClassesValidation($email, 'dangerInput');
                 changeClassesValidation($requiredEmail, 'incorrectly');
-                $requiredEmail.text('Поле обязательно для заполнения');
-                validationFields.email = false;
-            } else if (!valEmail.test($email.val())) {
-                changeClassesValidation($email, 'dangerInput');
-                changeClassesValidation($requiredEmail, 'incorrectly');
-                $requiredEmail.text('Поле заполнено не корректно');
+                !$mailVal ? $requiredEmail.text('Поле обязательно для заполнения')
+                    : $requiredEmail.text('Поле заполнено не корректно');
                 validationFields.email = false;
             } else {
                 changeClassesValidation($email, 'successInput');
                 changeClassesValidation($requiredEmail, 'correctField');
                 validationFields.email = true;
-                console.log(validationFields);
             }
         },
         'price': function () {
             var countNumber = Number($price.val());
-            if (!$price.val()) {
+            var priceVal = $price.val();
+
+            if (!priceVal || !countNumber) {
                 changeClassesValidation($price, 'dangerInput');
                 changeClassesValidation($requiredPrice, 'incorrectly');
-                $requiredPrice.text('Поле обязательно для заполнения');
-                validationFields.price = false;
-            } else if (!countNumber) {
-                changeClassesValidation($price, 'dangerInput');
-                changeClassesValidation($requiredPrice, 'incorrectly');
-                $requiredPrice.text('Должны быть введены только цифры');
+                !priceVal ? $requiredPrice.text('Поле обязательно для заполнения')
+                    : $requiredPrice.text('Должны быть введены только цифры');
                 validationFields.price = false;
             } else {
                 changeClassesValidation($price, 'successInput');
                 changeClassesValidation($requiredPrice, 'correctField');
                 validationFields.price = true;
-                console.log(validationFields);
             }
         },
         'count': function () {
             var countNumber = Number($count.val());
-            if (!$count.val()) {
+            var countVal = $count.val();
+
+            if (!countVal || !countNumber) {
                 changeClassesValidation($count, 'dangerInput');
                 changeClassesValidation($requiredCount, 'incorrectly');
-                $requiredCount.text('Поле обязательно для заполнения');
-                validationFields.count = false;
-            } else if (!countNumber) {
-                changeClassesValidation($count, 'dangerInput');
-                changeClassesValidation($requiredCount, 'incorrectly');
-                $requiredCount.text('Должны быть введены только цифры');
+                !countVal ? $requiredCount.text('Поле обязательно для заполнения')
+                    : $requiredCount.text('Должны быть введены только цифры');
                 validationFields.count = false;
             } else {
                 changeClassesValidation($count, 'successInput');
                 changeClassesValidation($requiredCount, 'correctField');
                 validationFields.count = true;
-                console.log(validationFields);
             }
         }
     };
@@ -163,6 +143,7 @@ $(document).ready(function () {
                 .removeClass('hidden')
                 .addClass('visible required-success');
         }
+
         if (status === 'incorrectly') {
             obj
                 .removeClass('hidden required-success')
@@ -171,6 +152,10 @@ $(document).ready(function () {
     }
 
     $('#search').on('click', function () {
+        $sortArrowsName.addClass('hidden');
+        $sortName.attr('data-sortStep', 'first');
+        $sortArrowsPrice.addClass('hidden');
+        $sortPrice.attr('data-sortStep', 'first');
         productSort = [];
         var inputSearch = $('#inputSearch').val().toLowerCase();
 
@@ -178,9 +163,7 @@ $(document).ready(function () {
             if (product[i].name.toLowerCase().indexOf(inputSearch) !== -1) {
                 productSort.push(product[i]);
             }
-            console.log(product[i].name.indexOf(inputSearch));
         }
-        console.log('Product: ', product, 'ProductSort', productSort);
         render(productSort);
     });
 
@@ -199,12 +182,10 @@ $(document).ready(function () {
         validationValue = true;
 
         for (var key in validationFields) { //hasOwnProperty
-
+            if (!validationFields.hasOwnProperty(key)) continue;
             if (!validationFields[key]) {
-                console.log(validationValue);
                 validationValue = false;
             }
-            console.log(validationValue);
         }
         $btnModal.toggleClass('disabled', !validationValue);
     }
@@ -246,23 +227,23 @@ $(document).ready(function () {
         }
     }
 
-
-    var $modalDelete = $("#modalDelete");
-    var $overlay = $("#overlay");
-    var $modalAdd = $("#modalAdd");
+    var $modalDelete = $('#modalDelete');
+    var $overlay = $('#overlay');
+    var $modalAdd = $('#modalAdd');
     var productSortObj;
 
     $productList.on('click', '.btn-danger', function () {
+
         if (modal) {
             modal.css('display', 'none');
-            $('html').css('overflow-y', 'auto');
+            $html.css('overflow-y', 'auto');
         }
         modal = $modalDelete;
         var $this = $(this);
 
         $modalDelete.css('display', 'block');
         $overlay.css('display', 'block');
-        $('html').css('overflow-y', 'hidden');
+        $html.css('overflow-y', 'hidden');
         dataNumber = $this.closest('tr').attr('data-number');
         productSortObj = productSort.filter(function (v) {
             return v.id == dataNumber;
@@ -270,8 +251,7 @@ $(document).ready(function () {
     });
 
     $modalDelete.on('click', '.btn-danger', function () {
-        $modalDelete.css('display', 'none');
-        $overlay.css('display', 'none');
+        hideModal($modalDelete);
     });
 
     $modalDelete.on('click', '.btn-success', function () {
@@ -285,47 +265,45 @@ $(document).ready(function () {
             return !(v.id == dataNumber);
         });
         render(productSort);
-        $('html').css('overflow-y', 'auto');
-        $modalDelete.css('display', 'none');
-        $overlay.css('display', 'none');
+        $html.css('overflow-y', 'auto');
+        hideModal($modalDelete);
     });
 
-    $("#addNew").on('click', function () {          //модалка Add
+    $('#addNew').on('click', function () {          //модалка Add
         validationFields = {name: false, email: false, count: false, price: false};
         correct();
         if (modal) {
             modal.css('display', 'none');
-            $('html').css('overflow-y', 'auto');
+            $html.css('overflow-y', 'auto');
         }
         $('#addProductForm')[0].reset();
         modal = $modalAdd;
         $('.modal-button').attr('data-id', 'btnAdd').text('Add');
-        $('.modal-window-header').text('Add new product.');
+        $modalHeader.text('Add new product.');
 
-        $('html').css('overflow-y', 'hidden');
+        $html.css('overflow-y', 'hidden');
         modal.css('display', 'block');
         $overlay.css('display', 'block');
     });
 
     $productList.on('click', '.btn-success', function () { //модалка update
+
         validationFields = {name: false, email: false, count: false, price: false};
+
         if (modal) {
             modal.css('display', 'none');
-            $('html').css('overflow-y', 'auto');
+            $html.css('overflow-y', 'auto');
         }
-        console.log(validationValue);
+
         modal = $modalAdd;
-        $('.modal-window-header').text('Edit product.');
-        var $this = $(this);
+        showModal(modal);
 
+        $modalHeader.text('Edit product.');
         $btnModal.removeClass('disabled');
-
         $('.modal-button').attr('data-id', 'btnUpd').text('Update');
+        $html.css('overflow-y', 'hidden');
 
-        $('html').css('overflow-y', 'hidden');
-        $modalAdd.css('display', 'block');
-        $overlay.css('display', 'block');
-
+        var $this = $(this);
         dataNumber = $this.closest('tr').attr('data-number');
         productSortObj = productSort.filter(function (v) {
             return v.id == dataNumber;
@@ -343,8 +321,7 @@ $(document).ready(function () {
         $sel.val(val);
         if (val === 'Страна') {
             $countries.removeClass('hidden').addClass('visible');
-            console.log(productSortObj[0].countries);
-            $('[data-radio=' + productSortObj[0].countries + ']').prop("checked", true);
+            $('[data-radio=' + productSortObj[0].countries + ']').prop('checked', true);
         } else if (val === 'Пусто') {
             $cities.removeClass('visible').addClass('hidden');
             $countries.removeClass('visible').addClass('hidden');
@@ -355,28 +332,19 @@ $(document).ready(function () {
                 if (!productSortObj[0].checkedAllCheckbox[j]) {
                     checkAll = false;
                 }
-                $('[data-check=' + j + ']').prop("checked", productSortObj[0].checkedAllCheckbox[j]);
-                $checkAll.prop("checked", checkAll);
+                $('[data-check=' + j + ']').prop('checked', productSortObj[0].checkedAllCheckbox[j]);
+                $checkAll.prop('checked', checkAll);
             }
         }
     });
 
     $(document).on('click', function (e) {
         if (e.target.className === 'overlay') {
-            $('html').css('overflow-y', 'auto');
+            $html.css('overflow-y', 'auto');
             $modalAdd.css('display', 'none');
             $modalDelete.css('display', 'none');
             $overlay.css('display', 'none');
-            $nameProduct.removeClass('input-success input-danger');
-            $requiredNameProduct.removeClass('visible').addClass('hidden');
-            $count.removeClass('input-success input-danger');
-            $requiredCount.removeClass('visible').addClass('hidden');
-            $price.removeClass('input-success input-danger');
-            $requiredPrice.removeClass('visible').addClass('hidden');
-            $email.removeClass('input-success input-danger');
-            $requiredEmail.removeClass('visible').addClass('hidden');
-            $countries.removeClass('visible').addClass('hidden');
-            $cities.removeClass('visible').addClass('hidden');
+            hiddenRequiredFieldsText();
             validationValue = false;
         }
     });
@@ -394,8 +362,8 @@ $(document).ready(function () {
             .toggleClass('hidden', val !== 'Город')
             .toggleClass('visible', val === 'Город');
     });
-    var $checkAll = $('#checkAll');
 
+    var $checkAll = $('#checkAll');
 
     $checkAll.click(selectAll);
     var checkedAllCheckbox = [false, false, false];
@@ -404,27 +372,25 @@ $(document).ready(function () {
     $('#checkMsk').click(checkedCheckbox);
 
     function checkedCheckbox() {
-        checkedAllCheckbox[$(this).attr('data-check')] = !!$(this).is(":checked");
+        checkedAllCheckbox[$(this).attr('data-check')] = !!$(this).is(':checked');
 
         var checkAll = true;
         for (var j = 0; j < checkedAllCheckbox.length; j++) {
             if (!checkedAllCheckbox[j]) {
-                console.log(checkedAllCheckbox, checkedAllCheckbox[j]);
                 checkAll = false;
             }
         }
-
-        $checkAll.prop("checked", checkAll);
+        $checkAll.prop('checked', checkAll);
     }
 
     function selectAll() {
-        $("input[type=checkbox]").each(function () {
-            $(this).prop("checked", $checkAll.prop("checked"));
+        $('input[type=checkbox]').each(function () {
+            $(this).prop('checked', $checkAll.prop('checked'));
         });
         return checkedAllCheckbox = [true, true, true];
     }
 
-    $("input[type=radio]").click(checkedRadio);
+    $('input[type=radio]').click(checkedRadio);
     var selectedRadio;
 
     function checkedRadio() {
@@ -442,175 +408,144 @@ $(document).ready(function () {
     });
 
     var $sortName = $('#sortName');
-    var $sortNameUp = $('#sortNameUp');
-    var $sortNameDown = $('#sortNameDown');
+    var $sortArrowsName = $('#sortArrowsName');
 
     var $sortPrice = $('#sortPrice');
-    var $sortPriceUp = $('#sortPriceUp');
-    var $sortPriceDown = $('#sortPriceDown');
-    $sortName.click(sortName);
+    var $sortArrowsPrice = $('#sortArrowsPrice');
+
+    $sortName.click(function () {
+        sort($sortName, $sortArrowsName, 'name', $sortPrice, $sortArrowsPrice);
+    });
+
+    $sortPrice.click(function () {
+        sort($sortPrice, $sortArrowsPrice, 'price', $sortName, $sortArrowsName);
+    });
     var productSortFirst = [];
 
-    function sortName() {
-        $sortPriceDown.addClass('hidden').removeClass('visible');
-        $sortPriceUp.addClass('hidden').removeClass('visible');
-        $sortPrice.attr('data-sortStep', 'first');
-        if ($sortName.attr('data-sortStep') === 'first') {
-            productSortFirst = [].concat(productSort);
-            $sortName.attr('data-sortStep', 'second');
-            $sortNameUp.removeClass('hidden').addClass('visible');
-            $sortNameDown.addClass('hidden').removeClass('visible');
-            productSort.sort(sortNameUp('name'));
-        } else if ($sortName.attr('data-sortStep') === 'second') {
-            $sortName.attr('data-sortStep', 'third');
-            $sortNameUp.addClass('hidden').removeClass('visible');
-            $sortNameDown.addClass('visible').removeClass('hidden');
-            productSort.sort(sortNameDown('name'));
-        } else if ($sortName.attr('data-sortStep') === 'third') {
-            $sortName.attr('data-sortStep', 'first');
-            $sortNameDown.removeClass('visible').addClass('hidden');
-            productSort = [].concat(productSortFirst);
+    function sort(sortFieldName, sortArrows, sortField, otherSortFieldName, otherArrows) {
+        var sortVal = sortFieldName.attr('data-sortStep');
+
+        otherArrows.addClass('hidden');
+        otherSortFieldName.attr('data-sortStep', 'first');
+        switch (sortVal) {
+            case 'first':
+                productSortFirst = [].concat(productSort);
+                sortFieldName.attr('data-sortStep', 'second');
+                productSort.sort(sortNameUp(sortField));
+                break;
+            case 'second':
+                sortFieldName.attr('data-sortStep', 'third');
+                productSort.sort(sortNameDown(sortField));
+                break;
+            case 'third':
+                sortFieldName.attr('data-sortStep', 'first');
+                productSort = [].concat(productSortFirst);
+                break
         }
+        sortArrows
+            .toggleClass('glyphicon-chevron-up', sortVal === 'first')
+            .toggleClass('glyphicon-chevron-down', sortVal === 'second')
+            .toggleClass('hidden', sortVal === 'third');
         render(productSort);
     }
 
-    $sortPrice.click(sortPrice);
-
-    function sortPrice() {
-        $sortNameDown.addClass('hidden').removeClass('visible');
-        $sortNameUp.addClass('hidden').removeClass('visible');
-        $sortName.attr('data-sortStep', 'first');
-        if ($sortPrice.attr('data-sortStep') === 'first') {
-            productSortFirst = [].concat(productSort);
-            $sortPrice.attr('data-sortStep', 'second');
-            $sortPriceUp.removeClass('hidden').addClass('visible');
-            $sortPriceDown.addClass('hidden').removeClass('visible');
-            productSort.sort(sortPriceUp('price'));
-        } else if ($sortPrice.attr('data-sortStep') === 'second') {
-            $sortPrice.attr('data-sortStep', 'third');
-            $sortPriceUp.addClass('hidden').removeClass('visible');
-            $sortPriceDown.addClass('visible').removeClass('hidden');
-            productSort.sort(sortPriceDown('price'));
-        } else if ($sortPrice.attr('data-sortStep') === 'third') {
-            $sortPrice.attr('data-sortStep', 'first');
-            $sortPriceDown.removeClass('visible').addClass('hidden');
-            productSort = [].concat(productSortFirst);
-        }
-
-        render(productSort);
-    }
-
-    function sortPriceUp(prop) {
-        return function (a, b) {
-            return b[prop] - a[prop];
-        }
-    }
-
-    function sortPriceDown(prop) {
-        return function (a, b) {
-            return a[prop] - b[prop];
-        }
-    }
-
-    function sortNameUp(prop) {
-        return function (a, b) {
-            var c = b[prop];
-            var d = a[prop];
-            console.log('сработала', b[prop]);
-            return c > d;
-        }
-    }
-
-    function sortNameDown(prop) {
-        return function (a, b) {
-            var c = b[prop];
-            var d = a[prop];
-            console.log('сработала', b[prop]);
-            return c < d;
-        }
-    }
-
-    function addProduct() {
-        if (validationValue) {
-            validationFields = {name: false, email: false, count: false, price: false};
-            var newProduct = {};
-            newProduct.name = $('#nameProduct').val();
-            newProduct.email = $('#email').val();
-            newProduct.count = parseInt($('#count').val());
-            newProduct.price = parseInt($('#price').val());
-            newProduct.delivery = $sel.val();
-            if ($sel.val() === 'Страна') {
-                newProduct.countries = selectedRadio;
-            } else {
-                newProduct.checkedAllCheckbox = [].concat(checkedAllCheckbox);
+        function sortNameUp(prop) {
+            return function (a, b) {
+                var c = b[prop];
+                var d = a[prop];
+                return c > d;
             }
-            checkedAllCheckbox = [false, false, false];
+        }
 
-            console.log(newProduct);
-            console.log(productSort, product);
-            product.push(newProduct);
-            productSort.push(newProduct);
-            console.log(product);
-            $('html').css('overflow-y', 'auto');
-            $requiredNameProduct.removeClass('visible').addClass('hidden');
-            $requiredCount.removeClass('visible').addClass('hidden');
-            $requiredPrice.removeClass('visible').addClass('hidden');
-            $requiredEmail.removeClass('visible').addClass('hidden');
-            $countries.removeClass('visible').addClass('hidden');
-            $cities.removeClass('visible').addClass('hidden');
-            $btnModal.addClass('disabled');
-            $modalAdd.css('display', 'none');
+        function sortNameDown(prop) {
+            return function (a, b) {
+                var c = b[prop];
+                var d = a[prop];
+                return c < d;
+            }
+        }
+
+        function addProduct() {
+            if (validationValue) {
+                validationFields = {name: false, email: false, count: false, price: false};
+                var newProduct = {};
+                newProduct.name = $('#nameProduct').val();
+                newProduct.email = $('#email').val();
+                newProduct.count = parseInt($('#count').val());
+                newProduct.price = parseInt($('#price').val());
+                newProduct.delivery = $sel.val();
+                if ($sel.val() === 'Страна') {
+                    newProduct.countries = selectedRadio;
+                } else {
+                    newProduct.checkedAllCheckbox = [].concat(checkedAllCheckbox);
+                }
+                checkedAllCheckbox = [false, false, false];
+
+                product.push(newProduct);
+                productSort.push(newProduct);
+                $html.css('overflow-y', 'auto');
+                hiddenRequiredFieldsText();
+                $btnModal.addClass('disabled');
+                hideModal($modalAdd);
+
+                render(productSort);
+                validationFields = {name: false, email: false, count: false, price: false};
+
+                $('#addProductForm')[0].reset();
+            } else {
+                alert('Заполните корректно все обязательные поля');
+            }
+        }
+
+        function updProduct() {
+            if (validationValue) {
+                productSortObj = productSort.filter(function (v) {
+                    return v.id == dataNumber;
+                });
+                productSortObj[0].name = $('#nameProduct').val();
+                productSortObj[0].email = $('#email').val();
+                productSortObj[0].count = parseInt($('#count').val());
+                productSortObj[0].price = parseInt($('#price').val());
+                productSortObj[0].delivery = $sel.val();
+                if ($sel.val() === 'Страна') {
+                    productSortObj[0].countries = selectedRadio;
+                } else {
+                    productSortObj[0].checkedAllCheckbox = [].concat(checkedAllCheckbox);
+                }
+                checkedAllCheckbox = [false, false, false];
+                hiddenRequiredFieldsText();
+                render(productSort);
+                $html.css('overflow-y', 'auto');
+                hideModal($modalAdd);
+                validationFields = {name: false, email: false, count: false, price: false};
+            } else {
+                alert('Заполните корректно все обязательные поля');
+            }
+        }
+
+        function showModal(modal) {
+            modal.css('display', 'block');
+            $overlay.css('display', 'block');
+        }
+
+        function hideModal(modal) {
+            modal.css('display', 'none');
             $overlay.css('display', 'none');
-
-
-            render(productSort);
-            validationFields = {name: false, email: false, count: false, price: false};
-
-            $('#addProductForm')[0].reset();
-            console.log('addProduct', $btnAdd)
-        } else {
-            alert('Заполните корректно все обязательные поля');
         }
 
-    }
-
-    function updProduct() {
-        if (validationValue) {
-            productSort[dataNumber].name = $('#nameProduct').val();
-            productSort[dataNumber].email = $('#email').val();
-            productSort[dataNumber].count = parseInt($('#count').val());
-            productSort[dataNumber].price = parseInt($('#price').val());
-            productSort[dataNumber].delivery = $sel.val();
-            if ($sel.val() === 'Страна') {
-                productSort[dataNumber].countries = selectedRadio;
-            } else {
-                productSort[dataNumber].checkedAllCheckbox = [].concat(checkedAllCheckbox);
-            }
-            checkedAllCheckbox = [false, false, false];
+        function hiddenRequiredFieldsText() {
             $requiredNameProduct.removeClass('visible').addClass('hidden');
             $requiredCount.removeClass('visible').addClass('hidden');
             $requiredPrice.removeClass('visible').addClass('hidden');
             $requiredEmail.removeClass('visible').addClass('hidden');
             $countries.removeClass('visible').addClass('hidden');
             $cities.removeClass('visible').addClass('hidden');
-            //productSort = [].concat(product);
-            render(productSort);
-            $('html').css('overflow-y', 'auto');
             $nameProduct.removeClass('input-success input-danger');
             $email.removeClass('input-success input-danger');
             $count.removeClass('input-success input-danger');
             $price.removeClass('input-success input-danger');
-            $requiredNameProduct.removeClass('visible').addClass('hidden');
-
-            $modalAdd.css('display', 'none');
-            $overlay.css('display', 'none');
-            console.log('updProduct сработала', product);
-            validationFields = {name: false, email: false, count: false, price: false};
-        } else {
-            console.log(validationValue);
-            alert('Заполните корректно все обязательные поля');
         }
-    }
 
-    render(productSort);
-});
+        render(productSort);
+    }
+);

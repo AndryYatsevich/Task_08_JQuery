@@ -4,7 +4,6 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <title data-res="headTitle">08_Task_Table</title>
-    <link rel="icon" type="image/icon" href="favicon.ico">
 
     <link href="resources/css/bootstrap.css" rel="stylesheet">
     <link href="resources/css/style.css" rel="stylesheet">
@@ -41,7 +40,7 @@
                     <label for="nameProduct">Name:</label>
                     <input type="text" class="form-control" id="nameProduct" placeholder="Name" data-correct="false">
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-9">
                     <div class="hidden required" id="requiredNameProduct"></div>
 
                 </div>
@@ -139,8 +138,8 @@
             <table class="table" id="productList">
                 <thead>
                 <tr>
-                    <th><span id="sortName" data-sortStep="first" class="mouse">Name <span class="glyphicon glyphicon-chevron-down hidden" id="sortNameDown"></span><span class="glyphicon glyphicon-chevron-up hidden" id="sortNameUp"></span></span></th>
-                    <th><span id="sortPrice" data-sortStep="first" class="mouse">Price <span class="glyphicon glyphicon-chevron-up hidden" id="sortPriceUp"></span><span class="glyphicon glyphicon-chevron-down hidden" id="sortPriceDown"></span> </span></th>
+                    <th><span id="sortName" data-sortStep="first" class="mouse">Name <span class="glyphicon" id="sortArrowsName"></span></span></th>
+                    <th><span id="sortPrice" data-sortStep="first" class="mouse">Price <span class="glyphicon" id="sortArrowsPrice"></span></span></th>
                     <th>Action</th>
                 </tr>
                 </thead>
