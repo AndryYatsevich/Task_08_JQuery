@@ -16,6 +16,39 @@
 </head>
 <body>
 <div class="overlay" id="overlay"></div>
+<div class="modal-window" id="authorization">
+    <form>
+        <div class="modal-window-header">
+            Please log in
+        </div>
+        <div class="modal-window-content">
+            <div class="form-group row">
+                <div class="col-xs-3">
+                    <label for="nameProduct">Email:</label>
+                    <input type="text" class="form-control" id="loginEmail" placeholder="Email" data-correct="false">
+                </div>
+                <div class="col-xs-9">
+                    <div class="hidden required" id="requiredloginEmail"></div>
+
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-xs-3">
+                    <label for="email">Email:</label>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="Password">
+                </div>
+                <div class="col-xs-6">
+                    <div class="hidden required" id="requiredpasswordLogin"></div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-window-footer">
+            <button type="submit" class="btn btn-default" onclick="event.preventDefault()" id="btnLogin">Login
+            </button>
+        </div>
+    </form>
+</div>
 <div class="modal-window" id="modalDelete">
     <div class="modal-window-header">
         Are you sure?
@@ -91,7 +124,8 @@
                             <label><input type="checkbox" value="Москва" id="checkMsk" data-check="0">Москва</label>
                         </div>
                         <div class="checkbox">
-                            <label><input type="checkbox" value="Хабаровск" id="checkHab" data-check="1">Хабаровск</label>
+                            <label><input type="checkbox" value="Хабаровск" id="checkHab"
+                                          data-check="1">Хабаровск</label>
                         </div>
                         <div class="checkbox">
                             <label><input type="checkbox" value="Саратов" id="checkSar" data-check="2">Саратов</label>
@@ -123,7 +157,8 @@
         <div class="col-xs-4">
             <form class="navbar-form navbar-left" role="search">
                 <input type="text" class="form-control" placeholder="Search" id="inputSearch">
-                <button type="submit" class="btn btn-default" onclick="event.preventDefault()" id="search">Search</button>
+                <button type="submit" class="btn btn-default" onclick="event.preventDefault()" id="search">Search
+                </button>
             </form>
 
         </div>
@@ -138,8 +173,12 @@
             <table class="table" id="productList">
                 <thead>
                 <tr>
-                    <th><span id="sortName" data-sortStep="first" class="mouse">Name <span class="glyphicon" id="sortArrowsName"></span></span></th>
-                    <th><span id="sortPrice" data-sortStep="first" class="mouse">Price <span class="glyphicon" id="sortArrowsPrice"></span></span></th>
+                    <th><span id="sortName" data-sortStep="first" class="mouse">Name <span class="glyphicon"
+                                                                                           id="sortArrowsName"></span></span>
+                    </th>
+                    <th><span id="sortPrice" data-sortStep="first" class="mouse">Price <span class="glyphicon"
+                                                                                             id="sortArrowsPrice"></span></span>
+                    </th>
                     <th>Action</th>
                 </tr>
                 </thead>
