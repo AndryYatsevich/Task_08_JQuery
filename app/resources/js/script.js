@@ -8,44 +8,7 @@
 
 $(document).ready(function () {
 
-    var product = [
-        {id: 0, name: 'Товар 4', email: 'product1@mail.com', count: 5, price: 12321232123.2, delivery: 'Пусто'},
-        {
-            id: 1,
-            name: 'Товар 55',
-            email: 'product2@mail.com',
-            count: 2,
-            price: 1202223.2334341,
-            delivery: 'Страна',
-            countries: 1
-        },
-        {
-            id: 2,
-            name: 'Товар 3',
-            email: 'product3@mail.com',
-            count: 7,
-            price: 73000000.4343,
-            delivery: 'Город',
-            checkedAllCheckbox: [true, true, true]
-        },
-        {
-            id: 3,
-            name: 'Товар 5',
-            email: 'product3@mail.com',
-            count: 7,
-            price: 73003453000.4343,
-            delivery: 'Город',
-            checkedAllCheckbox: [true, true, true]
-        },
-        {
-            id: 4,
-            name: 'Товар 555',
-            email: 'product3@mail.com',
-            count: 7,
-            price: 730000.4343,
-            delivery: 'Город',
-            checkedAllCheckbox: [true, true, true]
-        }];
+    var product = [];
     var productSort = [].concat(product); //
     var $productList = $('#productList');
     var $tbody = $('tbody', $productList);
@@ -156,7 +119,22 @@ $(document).ready(function () {
         $sortName.attr('data-sortStep', 'first');
         $sortArrowsPrice.addClass('hidden');
         $sortPrice.attr('data-sortStep', 'first');
-        productSort = [];
+        getAllProduct(function (data) {
+            product = [];
+            productSort = [].concat(data.data);
+            console.log('search', productSort);
+            var inputSearch = $('#inputSearch').val().toLowerCase();
+
+            for (var i = 0; i < productSort.length; i++) {
+                console.log('for в search', productSort[i]);
+                if (productSort[i].name.toLowerCase().indexOf(inputSearch) !== -1) {
+                    product.push(productSort[i]);
+                    console.log('for в search', productSort[i]);
+                }
+            }
+            render(product);
+        });
+       /* productSort = [];
         var inputSearch = $('#inputSearch').val().toLowerCase();
 
         for (var i = 0; i < product.length; i++) {
@@ -164,7 +142,7 @@ $(document).ready(function () {
                 productSort.push(product[i]);
             }
         }
-        render(productSort);
+        render(productSort);*/
     });
 
     $nameProduct.keyup(validation.productName);
@@ -258,16 +236,6 @@ $(document).ready(function () {
     });
 
     $modalDelete.on('click', '.btn-success', function () {
-        /*
-                    product = product.filter(function (v) {
-                        return !(v.id == dataNumber);
-                    });
-                    productSort = productSort.filter(function (v) {
-                        return !(v.id == dataNumber);
-                    });
-                    productSortFirst = productSortFirst.filter(function (v) {
-                        return !(v.id == dataNumber);
-                    });*/
         $.ajax({
             url: 'http://127.0.0.1:3000/products/' + dataNumber,
             headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
@@ -300,7 +268,7 @@ $(document).ready(function () {
             modal.css('display', 'block');
             $overlay.css('display', 'block');
         } else {
-            alert('Авторизуйся блеать!');
+            alert('Please log in!');
         }
     });
 
@@ -345,23 +313,39 @@ $(document).ready(function () {
                 var val = data.data.delivery;
                 $sel.val(val);
                 if (val === 'Страна') {
+                    console.log(data.data.country);
                     $countries.removeClass('hidden').addClass('visible');
-                    $('[data-radio=' + data.data.countries + ']').prop('checked', true);
+                    $('[data-radio=' + data.data.country + ']').prop('checked', true);
                 } else if (val === 'Пусто') {
                     $cities.removeClass('visible').addClass('hidden');
                     $countries.removeClass('visible').addClass('hidden');
                 } else {
                     $cities.removeClass('hidden').addClass('visible');
                     var checkAll = true;
-                    console.log(deliveryCity);
-                    for (var key in deliveryCity) { //hasOwnProperty
-                        if (!deliveryCity.hasOwnProperty(key)) continue;
-                        if (!deliveryCity[key]) {
+                    console.log(data.data.deliveryCity);
+                    if (data.data.deliveryCity.saratov) {
+                        $('#checkSar').prop('checked', true);
+                    } else {
+                        $('#checkSar').prop('checked', false);
+                    }
+                    if (data.data.deliveryCity.moscow) {
+                        $('#checkMsk').prop('checked', true);
+                    } else {
+                        $('#checkMsk').prop('checked', false);
+                    }
+                    if (data.data.deliveryCity.habarovsk) {
+                        $('#checkHab').prop('checked', true);
+                    } else {
+                        $('#checkHab').prop('checked', false);
+                    }
+                    for (var key in data.data.deliveryCity) { //hasOwnProperty
+                        if (!data.data.deliveryCity.hasOwnProperty(key)) continue;
+                        if (!data.data.deliveryCity[key]) {
                             checkAll = false;
                         }
                     }
                     $checkAll.prop('checked', checkAll);
-                   // $('[data-check=' + j + ']').prop('checked', data.data.deliveryCity[j]);
+                    // $('[data-check=' + j + ']').prop('checked', data.data.deliveryCity[j]);
                 }
             }
 
@@ -459,33 +443,37 @@ $sortName.click(function () {
 $sortPrice.click(function () {
     sort($sortPrice, $sortArrowsPrice, 'price', $sortName, $sortArrowsName);
 });
-var productSortFirst = [];
 
 function sort(sortFieldName, sortArrows, sortField, otherSortFieldName, otherArrows) {
+
     var sortVal = sortFieldName.attr('data-sortStep');
 
     otherArrows.addClass('hidden');
     otherSortFieldName.attr('data-sortStep', 'first');
     switch (sortVal) {
         case 'first':
-            productSortFirst = [].concat(productSort);
-            sortFieldName.attr('data-sortStep', 'second');
-            productSort.sort(sortNameUp(sortField));
+                sortFieldName.attr('data-sortStep', 'second');
+                product.sort(sortNameUp(sortField));
+                render(product);
             break;
         case 'second':
-            sortFieldName.attr('data-sortStep', 'third');
-            productSort.sort(sortNameDown(sortField));
+                sortFieldName.attr('data-sortStep', 'third');
+                product.sort(sortNameDown(sortField));
+                render(product);
             break;
         case 'third':
-            sortFieldName.attr('data-sortStep', 'first');
-            productSort = [].concat(productSortFirst);
+
+
+            getAllProduct(function (data) {
+                sortFieldName.attr('data-sortStep', 'first');
+                render(data.data);
+            });
             break
     }
     sortArrows
         .toggleClass('glyphicon-chevron-up', sortVal === 'first')
         .toggleClass('glyphicon-chevron-down', sortVal === 'second')
         .toggleClass('hidden', sortVal === 'third');
-    render(productSort);
 }
 
 function sortNameUp(prop) {
@@ -514,18 +502,20 @@ function addProduct() {
         newProduct.price = parseInt($('#price').val());
         newProduct.delivery = $sel.val();
         if ($sel.val() === 'Страна') {
-            newProduct.countries = selectedRadio;
+
+            newProduct.country = parseInt(selectedRadio);
         } else {
             console.log('addProduct: ', deliveryCity);
-            newProduct.deliveryCity = deliveryCity;
+            //_.extend({}, deliveryCity);
+            newProduct.deliveryCity = _.extend({}, deliveryCity);
         }
 
 
         console.log(newProduct);
         $.ajax({
             url: 'http://127.0.0.1:3000/products',
-            data: newProduct,
-            headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
+            data: JSON.stringify(newProduct),
+            headers: {Authorization: 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
             type: 'POST',
             success: function () {
                 $html.css('overflow-y', 'auto');
@@ -544,7 +534,7 @@ function addProduct() {
 
         //      render(productSort);
         validationFields = {name: false, email: false, count: false, price: false};
-       // deliveryCity = {'moscow': false, 'habarovsk': false, 'saratov': false};
+        deliveryCity = {'moscow': false, 'habarovsk': false, 'saratov': false};
         $('#addProductForm')[0].reset();
     } else {
         alert('Заполните корректно все обязательные поля');
@@ -563,16 +553,15 @@ function updProduct() {
         updProduct.price = parseInt($('#price').val());
         updProduct.delivery = $sel.val();
         if ($sel.val() === 'Страна') {
-            updProduct.countries = selectedRadio;
+            updProduct.country = parseInt(selectedRadio);
         } else {
-            updProduct.deliveryCity = deliveryCity;
+            updProduct.deliveryCity = _.extend({}, deliveryCity);
         }
-        deliveryCity = {'moscow': false, 'habarovsk': false, 'saratov': false};
-        ;
+
         $.ajax({
             url: 'http://127.0.0.1:3000/products/' + dataNumber,
-            headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
-            data: updProduct,
+            headers: {Authorization: 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+            data: JSON.stringify(updProduct),
             type: 'PUT',
             success: function () {
                 hiddenRequiredFieldsText();
@@ -583,7 +572,7 @@ function updProduct() {
             }
         });
 
-
+        deliveryCity = {'moscow': false, 'habarovsk': false, 'saratov': false};
         //render(productSort);
 
 
@@ -639,7 +628,7 @@ $('#btnLogin').on('click', function () {
     });
 });
 
-function getAllProduct() {
+function getAllProduct(cb) {
     $.ajax({
         url: 'http://127.0.0.1:3000/products',
         headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
@@ -648,6 +637,9 @@ function getAllProduct() {
             product = data.data;
             render(data.data);
             console.log(data.data);
+            if(_.isFunction(cb)){
+                cb(data);
+            }
         }
     })
 }
